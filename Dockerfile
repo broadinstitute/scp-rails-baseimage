@@ -2,7 +2,7 @@
 # sure you lock down to a specific version, not to `latest`!
 # See https://github.com/phusion/passenger-docker/blob/master/Changelog.md for
 # a list of version numbers.
-FROM phusion/passenger-full:0.9.17
+FROM phusion/passenger-full:0.9.18
 
 # Or, instead of the 'full' variant, use one of these:
 #FROM phusion/passenger-ruby19:<VERSION>
@@ -12,9 +12,6 @@ FROM phusion/passenger-full:0.9.17
 #FROM phusion/passenger-jruby90:<VERSION>
 #FROM phusion/passenger-nodejs:<VERSION>
 #FROM phusion/passenger-customizable:<VERSION>
-
-RUN usermod -u 1000 app
-RUN usermod -G staff app
 
 # Set correct environment variables.
 ENV HOME /root
@@ -39,7 +36,7 @@ CMD ["/sbin/my_init"]
 #RUN /pd_build/nodejs.sh
 
 # Install imagemagick & sphinx + dependencies
-RUN apt-get update && apt-get install -y -qq --no-install-recommends imagemagick ghostscript sphinxsearch build-essential unzip net-tools bc curl
+RUN apt-get update && apt-get install -y -qq --no-install-recommends imagemagick ghostscript sphinxsearch build-essential unzip net-tools bc curl sendmail
 RUN apt-get install libaio1
 RUN apt-get clean && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
