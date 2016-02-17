@@ -36,7 +36,7 @@ CMD ["/sbin/my_init"]
 #RUN /pd_build/nodejs.sh
 
 # Install imagemagick & sphinx + dependencies
-RUN apt-get update && apt-get install -y -qq --no-install-recommends imagemagick ghostscript sphinxsearch build-essential unzip net-tools bc curl sendmail
+RUN apt-get update && apt-get install -y -qq --no-install-recommends imagemagick ghostscript sphinxsearch build-essential unzip net-tools bc curl ssmtp
 RUN apt-get install libaio1
 RUN apt-get clean && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
