@@ -35,8 +35,11 @@ CMD ["/sbin/my_init"]
 #   Node.js and Meteor support.
 #RUN /pd_build/nodejs.sh
 
+# Update bundler
+RUN gem install bundler
+
 # Install imagemagick & sphinx + dependencies
-RUN apt-get update && apt-get install -y -qq --no-install-recommends imagemagick ghostscript sphinxsearch build-essential unzip net-tools bc curl ssmtp
+RUN apt-get update && apt-get install -y -qq --no-install-recommends imagemagick ghostscript sphinxsearch build-essential unzip net-tools bc curl ssmtp 
 RUN apt-get install libaio1
 RUN apt-get clean && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
@@ -59,7 +62,17 @@ RUN echo '/opt/oracle/instantclient/' | tee -a /etc/ld.so.conf.d/oracle_instant_
 # Set timezone correctly
 RUN echo America/New_York | sudo tee /etc/timezone && sudo dpkg-reconfigure --frontend noninteractive tzdata
 
-# Create temporary SSL certificate
+# Install letsencrypt for creating certificates at runtime in deployed instances
+RUN true \
+  && cd /opt \
+  && curl -L https://github.com/letsencrypt/letsencrypt/archive/v0.5.0.tar.gz > letsencrypt.tar.gz \
+  && tar -xf letsencrypt.tar.gz \
+  && rm letsencrypt.tar.gz \
+  && cd letsencrypt-* \
+# This command will actually install the tool.
+  && ./letsencrypt-auto --help
+
+# Create temporary SSL certificate for local development
 RUN mkdir /etc/pki/tls
 RUN mkdir /etc/pki/tls/certs
 RUN mkdir /etc/pki/tls/private
@@ -67,4 +80,3 @@ RUN openssl req -newkey rsa:4096 -days 365 -nodes -x509 \
     -subj "/C=US/ST=Massachusetts/L=Cambridge/O=Broad Institute/OU=BITS DevOps/CN=docker-host/emailAddress=devops@broadinstitute.org" \
     -keyout /etc/pki/tls/private/localhost.key \
     -out /etc/pki/tls/certs/localhost.crt
-RUN rm -f /etc/service/nginx/down
