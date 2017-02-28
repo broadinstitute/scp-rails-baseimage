@@ -40,7 +40,7 @@ CMD ["/sbin/my_init"]
 RUN gem install bundler
 
 # Install imagemagick & sphinx + dependencies
-RUN apt-get update && apt-get install -y -qq --no-install-recommends apt-utils sudo
+RUN apt-get update && apt-get install -y -qq --no-install-recommends apt-utils sudo tzdata
 RUN apt-get update && apt-get install -y -qq --no-install-recommends imagemagick ghostscript sphinxsearch build-essential unzip net-tools bc curl ssmtp debconf
 RUN apt-get install libaio1
 RUN apt-get clean && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
@@ -62,8 +62,8 @@ ENV OCI_INCLUDE_DIR="/opt/oracle/instantclient/sdk/include"
 RUN echo '/opt/oracle/instantclient/' | tee -a /etc/ld.so.conf.d/oracle_instant_client.conf && ldconfig
 
 # Set timezone correctly
-RUN echo 'America/New_York' > /etc/timezone 
-RUN dpkg-reconfigure --frontend noninteractive tzdata
+RUN ln -fs /usr/share/zoneinfo/America/New_York /etc/localtime
+RUN dpkg-reconfigure -f noninteractive tzdata
 
 
 # Create temporary SSL certificate for local development
