@@ -70,6 +70,10 @@ RUN dpkg-reconfigure -f noninteractive tzdata
 RUN mkdir /etc/pki/tls
 RUN mkdir /etc/pki/tls/certs
 RUN mkdir /etc/pki/tls/private
+RUN echo "copy_extensions = copy\n" >> /etc/ssl/openssl.cnf
+RUN echo "subjectAltName=email:copy\n" >> /etc/ssl/openssl.cnf
+RUN echo "issuerAltName=issuer:copy\n" >> /etc/ssl/openssl.cnf
+
 RUN openssl req -newkey rsa:4096 -days 365 -nodes -x509 \
     -subj "/C=US/ST=Massachusetts/L=Cambridge/O=Broad Institute/OU=BITS DevOps/CN=localhost/emailAddress=bistline@broadinstitute.org" \
     -keyout /etc/pki/tls/private/localhost.key \
