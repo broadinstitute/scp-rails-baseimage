@@ -2,7 +2,7 @@
 # sure you lock down to a specific version, not to `latest`!
 # See https://github.com/phusion/passenger-docker/blob/master/Changelog.md for
 # a list of version numbers.
-FROM phusion/passenger-full:0.9.33
+FROM phusion/passenger-full:0.9.35
 
 # Or, instead of the 'full' variant, use one of these:
 #FROM phusion/passenger-ruby19:<VERSION>
@@ -39,15 +39,19 @@ CMD ["/sbin/my_init"]
 # Update bundler
 RUN gem install bundler
 
-# Install imagemagick & sphinx + dependencies
-RUN apt-get update && apt-get install -y -qq --no-install-recommends apt-utils sudo tzdata
+# Install imagemagick + dependencies
+RUN apt-get update && apt-get install -y -qq --no-install-recommends apt-utils sudo tzdata wget
 RUN apt-get update && apt-get install -y -qq --no-install-recommends imagemagick ghostscript build-essential unzip net-tools bc curl ssmtp debconf
-RUN apt-get install libaio1
+RUN apt-get update && apt-get install libaio1
 RUN apt-get clean && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
+ 
+# add yarn
+RUN curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | sudo apt-key add -
+RUN echo "deb https://dl.yarnpkg.com/debian/ stable main" | sudo tee /etc/apt/sources.list.d/yarn.list
+RUN sudo apt-get update && sudo apt-get install yarn
 
 # Set timezone correctly
 RUN ln -fs /usr/share/zoneinfo/America/New_York /etc/localtime && printf 'America\nNew_York\n' | dpkg-reconfigure tzdata
-
 
 # Create temporary SSL certificate for local development
 RUN mkdir /etc/pki/tls
@@ -58,7 +62,7 @@ RUN echo "subjectAltName=email:copy\n" >> /etc/ssl/openssl.cnf
 RUN echo "issuerAltName=issuer:copy\n" >> /etc/ssl/openssl.cnf
 
 RUN openssl req -newkey rsa:4096 -days 365 -nodes -x509 \
-    -subj "/C=US/ST=Massachusetts/L=Cambridge/O=Broad Institute/OU=BITS DevOps/CN=localhost/emailAddress=bistline@broadinstitute.org" \
+    -subj "/C=US/ST=Massachusetts/L=Cambridge/O=Broad Institute/OU=BITS DevOps/CN=localhost/subjectAltName=localhost/emailAddress=bistline@broadinstitute.org" \
     -keyout /etc/pki/tls/private/localhost.key \
     -out /etc/pki/tls/certs/localhost.crt
     
