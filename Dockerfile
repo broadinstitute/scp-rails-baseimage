@@ -45,10 +45,10 @@ RUN apt-get update && apt-get install -y -qq --no-install-recommends imagemagick
 RUN apt-get update && apt-get install libaio1
 RUN apt-get clean && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
  
-# add yarn
+# add yarn  
 RUN curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | sudo apt-key add -
-RUN echo "deb https://dl.yarnpkg.com/debian/ stable main" | sudo tee /etc/apt/sources.list.d/yarn.list
-RUN sudo apt-get update && sudo apt-get install yarn
+RUN echo "deb [trusted=yes] https://dl.yarnpkg.com/debian/ stable main" | sudo tee /etc/apt/sources.list.d/yarn.list
+RUN apt-get update && apt-get install yarn
 
 # Set timezone correctly
 RUN ln -fs /usr/share/zoneinfo/America/New_York /etc/localtime && printf 'America\nNew_York\n' | dpkg-reconfigure tzdata
