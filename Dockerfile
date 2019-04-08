@@ -2,7 +2,7 @@
 # sure you lock down to a specific version, not to `latest`!
 # See https://github.com/phusion/passenger-docker/blob/master/Changelog.md for
 # a list of version numbers.
-FROM phusion/passenger-full:0.9.35
+FROM phusion/passenger-full:1.0.5
 
 # Or, instead of the 'full' variant, use one of these:
 #FROM phusion/passenger-ruby19:<VERSION>
@@ -54,9 +54,9 @@ RUN apt-get update && apt-get install yarn
 RUN ln -fs /usr/share/zoneinfo/America/New_York /etc/localtime && printf 'America\nNew_York\n' | dpkg-reconfigure tzdata
 
 # Create temporary SSL certificate for local development
-RUN mkdir /etc/pki/tls
-RUN mkdir /etc/pki/tls/certs
-RUN mkdir /etc/pki/tls/private
+RUN mkdir -p /etc/pki/tls
+RUN mkdir -p /etc/pki/tls/certs
+RUN mkdir -p /etc/pki/tls/private
 RUN echo "copy_extensions = copy\n" >> /etc/ssl/openssl.cnf
 RUN echo "subjectAltName=email:copy\n" >> /etc/ssl/openssl.cnf
 RUN echo "issuerAltName=issuer:copy\n" >> /etc/ssl/openssl.cnf
