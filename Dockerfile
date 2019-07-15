@@ -2,7 +2,7 @@
 # sure you lock down to a specific version, not to `latest`!
 # See https://github.com/phusion/passenger-docker/blob/master/Changelog.md for
 # a list of version numbers.
-FROM phusion/passenger-full:0.9.35
+FROM phusion/passenger-full:1.0.6
 
 # Or, instead of the 'full' variant, use one of these:
 #FROM phusion/passenger-ruby19:<VERSION>
@@ -43,6 +43,10 @@ RUN gem install bundler
 RUN apt-get update && apt-get install -y -qq --no-install-recommends apt-utils sudo tzdata wget
 RUN apt-get update && apt-get install -y -qq --no-install-recommends imagemagick ghostscript build-essential unzip net-tools bc curl ssmtp debconf
 RUN apt-get update && apt-get install libaio1
+RUN apt-get clean && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
+
+# Install nginx-headers-more package
+RUN apt-get update && apt-get install -y -qq --no-install-recommends libnginx-mod-http-headers-more-filter
 RUN apt-get clean && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
  
 # add yarn  
