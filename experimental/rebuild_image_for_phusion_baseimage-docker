@@ -4,15 +4,17 @@ THIS_DIR="$(cd "$(dirname "$0")"; pwd)"
 
 build_command='cd /vagrant; make build BASE_IMAGE=gcr.io/gcp-runtimes/ubuntu_16_0_4:latest NAME=TODO_experimental'
 
-# TODO: run_command_in_docker_image "$build_command" ubuntu-14.04 
+# TODO: run_command_in_docker_image "$build_command" ubuntu-14.04
 
 MASTER_BASE_IMAGE="marketplace.gcr.io/google/ubuntu1804:latest"
 DOCKER_RUN_FLAGS="-it --rm"
 
+# TODO: probably put this back: -v /var/run/docker.sock:/var/run/docker.sock \
 docker run --name we_are_using_this_instead_of_vagrant \
     $DOCKER_RUN_FLAGS \
     -v $THIS_DIR:/tmp/experimental \
-    -v /var/run/docker.sock:/var/run/docker.sock \
+    -a stdout -a stderr \
+    -v $THIS_DIR/docker_daemon_experimental.json:/etc/docker/daemon.json \
     "$MASTER_BASE_IMAGE" \
     /tmp/experimental/rebuild_image_for_phusion_baseimage-docker_inside_container \
     || { echo $0 "docker run failed with $?" >&2; exit 1; }

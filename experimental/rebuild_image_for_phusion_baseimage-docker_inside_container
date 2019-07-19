@@ -2,4 +2,27 @@
 
 THIS_DIR="$(cd "$(dirname "$0")"; pwd)"
 
-echo $(hostname) $(pwd) $(whoami) $(date)
+# from https://docs.docker.com/install/linux/docker-ce/ubuntu/ : (plus make)
+APT_INSTALL_FLAGS="-y -qq --no-install-recommends"
+apt-get update && \
+apt-get install $APT_INSTALL_FLAGS \
+    apt-transport-https \
+    ca-certificates \
+    curl \
+    gnupg-agent \
+    software-properties-common \
+    make && \
+curl -fsSL https://download.docker.com/linux/ubuntu/gpg | apt-key add - && \
+add-apt-repository \
+   "deb [arch=amd64] https://download.docker.com/linux/ubuntu \
+   $(lsb_release -cs) \
+   stable" && \
+apt-get update && \
+apt-get install $APT_INSTALL_FLAGS docker-ce docker-ce-cli containerd.io || \
+{ echo "ERROR: failed to install make and/or docker" >&2; exit 1; }
+
+# TODO? -----maybe save this part as it's own docker image-------
+
+export PLATFORM=amd64 QEMU_ARCH=amd64   TAG_ARCH=amd64
+cd /tmp/experimental/phusion_baseimage-docker
+make build BASE_IMAGE="marketplace.gcr.io/google/ubuntu1804:latest" NAME=experimental || exit 1 # TODO: rename (NAME)
