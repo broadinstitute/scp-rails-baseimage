@@ -1,0 +1,14 @@
+#!/bin/bash
+
+vagrant --version > /dev/null || brew cask install vagrant
+
+VBoxManage --version || { echo "ERROR: you need to install virtualbox and try again" >&2;exit 1; }
+# brew cask ls | grep virtualbox-beta > /dev/null || { echo brew cask install caskroom/versions/virtualbox-beta; exit 1; }
+
+# find / -type f -name VBoxManage >> $0
+vagrant up --provision --provider=virtualbox || { echo "ERROR: vagrant up failed"; exit 1; }
+vagrant ssh -- -t 'cd /vagrant; make build BASE_IMAGE=gcr.io/gcp-runtimes/ubuntu_16_0_4:latest NAME=TODO_experimental' || { echo "ERROR: failed to build docker image"; vagrant halt; exit 1; } # TODO: get the image to build
+vagrant halt || exit 1
+echo vagrant destroy:
+vagrant destroy || exit 1
+echo vagrant destroyed...

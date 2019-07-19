@@ -1,0 +1,47 @@
+#!/bin/bash
+
+THIS_DIR="$(cd "$(dirname "$0")"; pwd)"
+
+function main {
+    cd $THIS_DIR
+
+    for GITHUB_REPO_NAME in \
+        phusion/baseimage-docker \
+        phusion/passenger-docker \
+        broadinstitute/kdux-rails-baseimage
+    do
+        rebuild_docker_image_from_repo $GITHUB_REPO_NAME
+    done
+}
+
+function rebuild_docker_image_from_repo {
+
+    GITHUB_REPO_NAME="$1"
+
+    CLONE_REPO="git@github.com:$GITHUB_REPO_NAME.git"
+    echo "DEBUG: \$CLONE_REPO is $CLONE_REPO"
+
+    CLONE_DIR="$(echo $GITHUB_REPO_NAME | sed 's/\//_/' )"
+    echo "DEBUG: \$CLONE_DIR is $CLONE_DIR"
+
+    if ! [ -d  $CLONE_DIR ]; then
+        git clone $CLONE_REPO $CLONE_DIR || exit 1
+    fi
+
+    pushd $CLONE_DIR || exit 1
+    git pull || exit 1
+
+    REBUILD_SCRIPT="$THIS_DIR/rebuild_image_for_$CLONE_DIR"
+    if ! [ -f $REBUILD_SCRIPT ]; then
+        echo $REBUILD_SCRIPT
+        echo "#!$(which bash)" > $REBUILD_SCRIPT
+        echo "exit 1 # TODO: DELETE" >> $REBUILD_SCRIPT
+        chmod +x $REBUILD_SCRIPT # TODO: DELETE
+    fi
+
+    $REBUILD_SCRIPT || { echo "ERROR: $REBUILD_SCRIPT failed" >&2; exit 1; }
+
+    popd
+}
+
+main "$@"
