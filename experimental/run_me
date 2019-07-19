@@ -30,6 +30,7 @@ function rebuild_docker_image_from_repo {
 
     pushd $CLONE_DIR || exit 1
     git pull || exit 1
+    echo "$CLONE_DIR up to date!"
 
     REBUILD_SCRIPT="$THIS_DIR/rebuild_image_for_$CLONE_DIR"
     if ! [ -f $REBUILD_SCRIPT ]; then
