@@ -2,34 +2,23 @@
 
 THIS_DIR="$(cd "$(dirname "$0")"; pwd)"
 
-build_command='cd /vagrant; make build BASE_IMAGE=gcr.io/gcp-runtimes/ubuntu_16_0_4:latest NAME=TODO_experimental'
-
-# TODO: run_command_in_docker_image "$build_command" ubuntu-14.04
-
-MASTER_BASE_IMAGE="marketplace.gcr.io/google/ubuntu1804:latest"
+IMAGE_BUILDER_IMAGE="broadinstitute/image_builder_image:latest"
 DOCKER_RUN_FLAGS="-it --rm"
 
-# TODO: probably put this back: -v /var/run/docker.sock:/var/run/docker.sock \
-docker run --name we_are_using_this_instead_of_vagrant \
+export THIS_DIR_IN_DOCKER="/tmp/experimental" # TODO: pick a different value, I think
+
+docker stop image_builder_container
+docker rm image_builder_container
+docker run --name image_builder_container \
+    -e THIS_DIR_IN_DOCKER \
     $DOCKER_RUN_FLAGS \
-    -v $THIS_DIR:/tmp/experimental \
+    -v $THIS_DIR:$THIS_DIR_IN_DOCKER \
     -a stdout -a stderr \
-    -v $THIS_DIR/docker_daemon_experimental.json:/etc/docker/daemon.json \
-    "$MASTER_BASE_IMAGE" \
-    /tmp/experimental/rebuild_image_for_phusion_baseimage-docker_inside_container \
-    || { echo $0 "docker run failed with $?" >&2; exit 1; }
+    -v /var/run/docker.sock:/var/run/docker.sock \
+    "$IMAGE_BUILDER_IMAGE" \
+    $THIS_DIR_IN_DOCKER/rebuild_image_for_phusion_baseimage-docker_inside_container \
+    || { docker_exit_value="$?"; echo "ERROR: $(basename $0): docker run failed with $docker_exit_value" >&2; exit 1; }
+
+docker image ls | grep phusion_baseimage-docker || exit 1
 
 exit 0
-vagrant --version > /dev/null || brew cask install vagrant
-
-VBoxManage --version || { echo "ERROR: you need to install virtualbox and try again" >&2;exit 1; }
-# brew cask ls | grep virtualbox-beta > /dev/null || { echo brew cask install caskroom/versions/virtualbox-beta; exit 1; }
-
-# find / -type f -name VBoxManage >> $0
-
-vagrant up --provision --provider=virtualbox || { echo "ERROR: vagrant up failed"; exit 1; }
-vagrant ssh -- -t 'build_command' || { echo "ERROR: failed to build docker image"; vagrant halt; exit 1; } # TODO: get the image to build
-vagrant halt || exit 1
-echo vagrant destroy:
-vagrant destroy || exit 1
-echo vagrant destroyed...

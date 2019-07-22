@@ -1,9 +1,14 @@
 #!/bin/bash
 
 THIS_DIR="$(cd "$(dirname "$0")"; pwd)"
+IMAGE_REPOS="$THIS_DIR/image_repos"
 
 function main {
+    $THIS_DIR/build_image_builder_image || { echo "ERROR: could not build image_builder_image" >&2; exit 1; }
+    echo "finished building image_builder_image"
+
     cd $THIS_DIR
+    mkdir -p $IMAGE_REPOS
 
     for GITHUB_REPO_NAME in \
         phusion/baseimage-docker \
@@ -21,7 +26,8 @@ function rebuild_docker_image_from_repo {
     CLONE_REPO="git@github.com:$GITHUB_REPO_NAME.git"
     echo "DEBUG: \$CLONE_REPO is $CLONE_REPO"
 
-    CLONE_DIR="$(echo $GITHUB_REPO_NAME | sed 's/\//_/' )"
+    CLONE_DIR_NAME="$(echo $GITHUB_REPO_NAME | sed 's/\//_/' )"
+    CLONE_DIR="$IMAGE_REPOS/$CLONE_DIR_NAME"
     echo "DEBUG: \$CLONE_DIR is $CLONE_DIR"
 
     if ! [ -d  $CLONE_DIR ]; then
@@ -32,15 +38,16 @@ function rebuild_docker_image_from_repo {
     git pull || exit 1
     echo "$CLONE_DIR up to date!"
 
-    REBUILD_SCRIPT="$THIS_DIR/rebuild_image_for_$CLONE_DIR"
-    if ! [ -f $REBUILD_SCRIPT ]; then
-        echo $REBUILD_SCRIPT
-        echo "#!$(which bash)" > $REBUILD_SCRIPT
-        echo "exit 1 # TODO: DELETE" >> $REBUILD_SCRIPT
-        chmod +x $REBUILD_SCRIPT # TODO: DELETE
-    fi
+    REBUILD_SCRIPT="$THIS_DIR/rebuild_image_for_$CLONE_DIR_NAME"
+    if ! [ -f $REBUILD_SCRIPT ]; then                   # TODO: DELETE
+        echo $REBUILD_SCRIPT                            # TODO: DELETE
+        echo "#!$(which bash)" > $REBUILD_SCRIPT        # TODO: DELETE
+        echo "exit 1 # TODO: DELETE" >> $REBUILD_SCRIPT # TODO: DELETE
+        chmod +x $REBUILD_SCRIPT                        # TODO: DELETE
+    fi                                                  # TODO: DELETE
 
     $REBUILD_SCRIPT || { echo "ERROR: $REBUILD_SCRIPT failed" >&2; exit 1; }
+    echo "$REBUILD_SCRIPT finished."
 
     popd
 }

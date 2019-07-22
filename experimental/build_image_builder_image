@@ -1,0 +1,8 @@
+#!/bin/bash
+
+THIS_DIR="$(cd "$(dirname "$0")"; pwd)"
+
+IMAGE_NAME="image_builder_image"
+cd "$THIS_DIR/$IMAGE_NAME" || exit 1
+docker build -t broadinstitute/$IMAGE_NAME . || exit 1
+docker image ls | grep $IMAGE_NAME || exit 1
