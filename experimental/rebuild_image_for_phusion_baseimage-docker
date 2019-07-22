@@ -2,22 +2,10 @@
 
 THIS_DIR="$(cd "$(dirname "$0")"; pwd)"
 
-IMAGE_BUILDER_IMAGE="broadinstitute/image_builder_image:latest"
-DOCKER_RUN_FLAGS="-it --rm"
+INNER_SCRIPT="rebuild_image_for_phusion_baseimage-docker_inside_container"
 
-export THIS_DIR_IN_DOCKER="/tmp/experimental" # TODO: pick a different value, I think
-
-docker stop image_builder_container
-docker rm image_builder_container
-docker run --name image_builder_container \
-    -e THIS_DIR_IN_DOCKER \
-    $DOCKER_RUN_FLAGS \
-    -v $THIS_DIR:$THIS_DIR_IN_DOCKER \
-    -a stdout -a stderr \
-    -v /var/run/docker.sock:/var/run/docker.sock \
-    "$IMAGE_BUILDER_IMAGE" \
-    $THIS_DIR_IN_DOCKER/rebuild_image_for_phusion_baseimage-docker_inside_container \
-    || { docker_exit_value="$?"; echo "ERROR: $(basename $0): docker run failed with $docker_exit_value" >&2; exit 1; }
+cd $THIS_DIR || exit 1
+$THIS_DIR/bin/run_in_image_builder_container "$THIS_DIR/$INNER_SCRIPT" || { echo "ERROR: $(basename $0): FAILED to rebuild phusion base image" >&2; exit 1; }
 
 docker image ls | grep phusion_baseimage-docker || exit 1
 

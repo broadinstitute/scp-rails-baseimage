@@ -1,17 +1,17 @@
-# Use phusion/passenger-full as base image. To make your builds reproducible, make
+# Use broadinstitute/phusion_passenger-docker-full as base image. To make your builds reproducible, make
 # sure you lock down to a specific version, not to `latest`!
 # See https://github.com/phusion/passenger-docker/blob/master/Changelog.md for
 # a list of version numbers.
-FROM phusion/passenger-full:1.0.6
+FROM broadinstitute/phusion_passenger-docker-full:1.0.6
 
 # Or, instead of the 'full' variant, use one of these:
-#FROM phusion/passenger-ruby19:<VERSION>
-#FROM phusion/passenger-ruby20:<VERSION>
-#FROM phusion/passenger-ruby21:<VERSION>
-#FROM phusion/passenger-ruby22:0.9.17
-#FROM phusion/passenger-jruby90:<VERSION>
-#FROM phusion/passenger-nodejs:<VERSION>
-#FROM phusion/passenger-customizable:<VERSION>
+#FROM broadinstitute/phusion_passenger-docker-ruby19:<VERSION>
+#FROM broadinstitute/phusion_passenger-docker-ruby20:<VERSION>
+#FROM broadinstitute/phusion_passenger-docker-ruby21:<VERSION>
+#FROM broadinstitute/phusion_passenger-docker-ruby22:0.9.17
+#FROM broadinstitute/phusion_passenger-docker-jruby90:<VERSION>
+#FROM broadinstitute/phusion_passenger-docker-nodejs:<VERSION>
+#FROM broadinstitute/phusion_passenger-docker-customizable:<VERSION>
 
 # Set correct environment variables.
 ENV HOME /root
