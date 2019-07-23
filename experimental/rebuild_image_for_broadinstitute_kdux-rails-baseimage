@@ -4,6 +4,6 @@ cd ../../.. # TODO: OBVIATE
 IMAGE_NAME="kdux-rails-baseimage"
 docker build -t broadinstitute/$IMAGE_NAME:latest . || exit 1 # TODO: deal with version numbers
 docker image ls | grep "$IMAGE_NAME" || exit 1
-# TODO: publish
-# TODO: docker login
-# TODO: docker push $IMAGE_NAME:1.9.1
+# TODO: publish (separate script)
+# TODO:     docker login
+# TODO:     docker push "broadinstitute/$IMAGE_NAME:1.9.1"
