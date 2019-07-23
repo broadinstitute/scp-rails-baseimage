@@ -1,8 +1,10 @@
 #!/bin/bash
 cd ../../.. # TODO: OBVIATE
 
-IMAGE_NAME="kdux-rails-baseimage"
-docker build -t broadinstitute/$IMAGE_NAME:latest . || exit 1 # TODO: deal with version numbers
+IMAGE_NAME="scp-rails-baseimage" # TODO: change repo name to match
+# TODO: version 1.0 with new name. This should come from version.txt, which we force the user to maintain.
+# TODO: use interstitial versions to match source material, do not publish them
+docker build -t "broadinstitute/$IMAGE_NAME:latest" -t "broadinstitute/$IMAGE_NAME:1.9.1" . || exit 1 # TODO: deal with version numbers
 docker image ls | grep "$IMAGE_NAME" || exit 1
 # TODO: publish (separate script)
 # TODO:     docker login
