@@ -1,5 +1,7 @@
 #!/bin/bash
 
+# TODO: decide whether we need this at all, or maybe only locally?
+
 THIS_DIR="$(cd "$(dirname "$0")"; pwd)"
 
 IMAGE_NAME="image_builder_image"

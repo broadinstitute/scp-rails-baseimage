@@ -1,0 +1,12 @@
+#!/bin/bash
+
+THIS_DIR="$(cd "$(dirname "$0")"; pwd)"
+
+# TODO: use version.txt to declare the version number we'll use to publish this image
+# TODO: all other repos we are using to build intermediate versions should be pinned to specific versions (well, technically git commits since it's source), perhaps in a file like requirements.txt or maybe follow some other convention
+# TODO: ...if we do all that, and everything is pinned, then we just need to to bake the commit hash into the final image, although we could still choose to add other information such as versions or commit hashes of other repos if we wanted to
+
+$THIS_DIR/../experimental/run_me # TODO: refactor, making sure the directory organization makes sense
+
+# TODO: new draft pr
+# TODO: pr in old repo should amount to a readme change that mentions this repo

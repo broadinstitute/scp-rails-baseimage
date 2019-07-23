@@ -4,7 +4,7 @@ cd ../../.. # TODO: OBVIATE
 IMAGE_NAME="scp-rails-baseimage" # TODO: change repo name to match
 # TODO: version 1.0 with new name. This should come from version.txt, which we force the user to maintain.
 # TODO: use interstitial versions to match source material, do not publish them
-docker build -t "broadinstitute/$IMAGE_NAME:latest" -t "broadinstitute/$IMAGE_NAME:1.9.1" . || exit 1 # TODO: deal with version numbers
+docker build -t "broadinstitute/$IMAGE_NAME:latest" -t "broadinstitute/$IMAGE_NAME:1.9.1" . || exit 1 # TODO: deal with version numbers # Don't tag with actual version numbers until the publish script, so you can build, attempt publish, change version.txt when it fails, and re-attempt publish
 docker image ls | grep "$IMAGE_NAME" || exit 1
 # TODO: publish (separate script)
 # TODO:     docker login
