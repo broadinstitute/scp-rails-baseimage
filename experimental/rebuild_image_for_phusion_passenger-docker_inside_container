@@ -1,8 +1,0 @@
-#!/bin/bash
-
-IMAGE_REPOS_DIR="$DOCKER_MAP_DIR/image_repos"
-IMAGE_NAME="phusion_passenger-docker"
-
-cd $IMAGE_REPOS_DIR/$IMAGE_NAME || exit 1
-
-make build_full NAME="broadinstitute/$IMAGE_NAME" || exit 1 # TODO: instead of build_full, we might want to just build ruby 2.5, --we would have to change $THIS_DIR/../Dockerfile too, though

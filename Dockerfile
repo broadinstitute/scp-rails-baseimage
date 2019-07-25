@@ -2,7 +2,9 @@
 # sure you lock down to a specific version, not to `latest`!
 # See https://github.com/phusion/passenger-docker/blob/master/Changelog.md for
 # a list of version numbers.
-FROM broadinstitute/phusion_passenger-docker-full:1.0.6
+
+FROM broadinstitute/phusion_passenger-docker-ruby25:1.0.6
+#FROM broadinstitute/phusion_passenger-docker-full:1.0.6
 
 # Or, instead of the 'full' variant, use one of these:
 #FROM broadinstitute/phusion_passenger-docker-ruby19:<VERSION>

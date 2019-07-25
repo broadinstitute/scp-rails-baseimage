@@ -1,0 +1,24 @@
+#!/bin/bash
+
+# TODO: DRY this script as much as possible with the other script for building a phusion package
+
+GITHUB_REPO="phusion/baseimage-docker"
+
+THIS_DIR="$(cd "$(dirname "$0")"; pwd)"
+BASE_DIR="$(dirname $(dirname $THIS_DIR))"
+IMAGE_REPOS_DIR="$BASE_DIR/tmp" # TODO: DRY with other scripts
+
+. $BASE_DIR/lib/bash_include/github.bash
+
+IMAGE_NAME="$(new_image_name_from_repo $GITHUB_REPO)"
+
+# TODO: function extract?:
+SOURCE_DIR="$IMAGE_REPOS_DIR/$(dir_name_from_repo $GITHUB_REPO)"
+github_checkout $GITHUB_REPO $SOURCE_DIR || exit 1
+cd $SOURCE_DIR || exit 1
+
+export PATH="$BASE_DIR/lib/docker_shim:$PATH" # use a docker shim to filter out arguments we don't like
+
+export PLATFORM=amd64 QEMU_ARCH=amd64 TAG_ARCH=amd64
+make build BASE_IMAGE="marketplace.gcr.io/google/ubuntu1804:latest" NAME="broadinstitute/$IMAGE_NAME" || exit 1 # TODO: rename (NAME). We could set our own name, and take version numbers into account. Use a ./version.txt file for every docker image we build.
+docker image ls | grep "$IMAGE_NAME" || exit 1

@@ -19,3 +19,6 @@ apt-get update && \
 apt-get install $APT_INSTALL_FLAGS docker-ce docker-ce-cli containerd.io || \
 { echo "ERROR: failed to install make and/or docker" >&2; exit 1; }
 
+# BELOW here is stuff that's only necessary if you're running the whole build in the image builder container, as opposed to just the passenger phusion images
+RUN apt-get install $APT_INSTALL_FLAGS git
+

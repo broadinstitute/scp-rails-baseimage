@@ -1,9 +1,0 @@
-#!/bin/bash
-
-export PATH="$DOCKER_MAP_DIR/bin:$PATH" # use a docker shim to filter out arguments we don't like
-IMAGE_REPOS_DIR="$DOCKER_MAP_DIR/image_repos"
-IMAGE_NAME="phusion_baseimage-docker"
-cd $IMAGE_REPOS_DIR/$IMAGE_NAME || exit 1
-
-export PLATFORM=amd64 QEMU_ARCH=amd64 TAG_ARCH=amd64
-make build BASE_IMAGE="marketplace.gcr.io/google/ubuntu1804:latest" NAME="broadinstitute/$IMAGE_NAME" || exit 1 # TODO: rename (NAME). We could set our own name, and take version numbers into account. Use a ./version.txt file for every docker image we build.

@@ -1,0 +1,12 @@
+#!/bin/bash
+
+# TODO: document how to use this for local development
+
+THIS_DIR="$(cd "$(dirname "$0")"; pwd)"
+BASE_DIR="$(dirname $(dirname $THIS_DIR))"
+IMAGE_NAME="image_builder"
+IMAGE_BUILDER_SOURCE_DIR="$BASE_DIR/lib/$IMAGE_NAME"
+
+cd "$IMAGE_BUILDER_SOURCE_DIR" || exit 1
+docker build -t broadinstitute/$IMAGE_NAME . || exit 1
+docker image ls | grep "$IMAGE_NAME" || exit 1
