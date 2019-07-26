@@ -1,8 +1,10 @@
 
-# TODO: support tags:
 function github_checkout {
     GITHUB_REPO_NAME="$1"
     CLONE_DIR="$2"
+    TAG="$3"
+
+    if [ -z "$TAG" ];then echo "ERROR: github_checkout requires a tag" >&2;exit 1;fi
 
     # TODO: use a read-only URL so jenkins can succeed
     CLONE_REPO="git@github.com:$GITHUB_REPO_NAME.git" # TODO: DELETE
@@ -15,17 +17,15 @@ function github_checkout {
     fi
     pushd $CLONE_DIR || exit 1
     git checkout -- . || exit 1
-    # TODO: git fetch -a
-    # TODO: git checkout $TAG
-    git pull || exit 1
+    git checkout $TAG -- || exit 1
     echo "$CLONE_DIR up to date!"
     popd
 }
 
 function new_image_name_from_repo {
-    echo $1 | sed 's/\//_/'
+    dir_name_from_repo $1 | sed 's/[-]\?docker//'
 }
 
 function dir_name_from_repo {
-    new_image_name_from_repo $1 | sed 's/[-]\?docker//'
+    echo $1 | sed 's/\//_/'
 }

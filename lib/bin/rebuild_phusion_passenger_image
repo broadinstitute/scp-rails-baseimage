@@ -14,14 +14,16 @@ IMAGE_NAME="$(new_image_name_from_repo $GITHUB_REPO)"
 
 # TODO: function extract?:
 SOURCE_DIR="$IMAGE_REPOS_DIR/$(dir_name_from_repo $GITHUB_REPO)"
-github_checkout $GITHUB_REPO $SOURCE_DIR || exit 1
+github_checkout $GITHUB_REPO $SOURCE_DIR "rel-1.0.6" || exit 1
 cd $SOURCE_DIR || exit 1
 
+export PATH="$BASE_DIR/lib/docker_shim:$PATH" # use a docker shim to filter out arguments we don't like # TODO: DELETE after fast test cycles are not needed
+
 DOCKER_FILE="./image/Dockerfile"
-sed -i 's~^FROM[[:space:]].\{1,\}$~FROM broadinstitute/phusion_baseimage-docker:0.11-amd64~' $DOCKER_FILE # TODO: deal with versions # TODO: this would be a good place to add code to record it
+sed -i 's~^FROM[[:space:]].\{1,\}$~FROM singlecellportal/phusion_baseimage:0.11-amd64~' $DOCKER_FILE # TODO: deal with versions # TODO: this would be a good place to add code to record it
 
 # TODO: upgrade? warn of available upgrades?: MAKE_TARGET=build_ruby26
 # TODO: maybe use as an alternate since it's got all the rubies in it?: MAKE_TARGET=build_full
 MAKE_TARGET=build_ruby25
-make $MAKE_TARGET NAME="broadinstitute/$IMAGE_NAME" || exit 1
-docker image ls | grep "$IMAGE_NAME" || exit 1
+make $MAKE_TARGET NAME="singlecellportal/$IMAGE_NAME" || exit 1
+docker image ls | grep "\\b$IMAGE_NAME\\b" || exit 1

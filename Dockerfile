@@ -1,25 +1,25 @@
-# Use broadinstitute/phusion_passenger-docker-full as base image. To make your builds reproducible, make
+# Use singlecellportal/phusion_passenger-full as base image. To make your builds reproducible, make
 # sure you lock down to a specific version, not to `latest`!
 # See https://github.com/phusion/passenger-docker/blob/master/Changelog.md for
 # a list of version numbers.
 
-FROM broadinstitute/phusion_passenger-docker-ruby25:1.0.6
-#FROM broadinstitute/phusion_passenger-docker-full:1.0.6
+FROM singlecellportal/phusion_passenger-ruby25:1.0.6
+#FROM singlecellportal/phusion_passenger-full:1.0.6
 
 # Or, instead of the 'full' variant, use one of these:
-#FROM broadinstitute/phusion_passenger-docker-ruby19:<VERSION>
-#FROM broadinstitute/phusion_passenger-docker-ruby20:<VERSION>
-#FROM broadinstitute/phusion_passenger-docker-ruby21:<VERSION>
-#FROM broadinstitute/phusion_passenger-docker-ruby22:0.9.17
-#FROM broadinstitute/phusion_passenger-docker-jruby90:<VERSION>
-#FROM broadinstitute/phusion_passenger-docker-nodejs:<VERSION>
-#FROM broadinstitute/phusion_passenger-docker-customizable:<VERSION>
+#FROM singlecellportal/phusion_passenger-ruby19:<VERSION>
+#FROM singlecellportal/phusion_passenger-ruby20:<VERSION>
+#FROM singlecellportal/phusion_passenger-ruby21:<VERSION>
+#FROM singlecellportal/phusion_passenger-ruby22:0.9.17
+#FROM singlecellportal/phusion_passenger-jruby90:<VERSION>
+#FROM singlecellportal/phusion_passenger-nodejs:<VERSION>
+#FROM singlecellportal/phusion_passenger-customizable:<VERSION>
 
 # Set correct environment variables.
 ENV HOME /root
 USER root
 
-# Use baseimage-docker's init process.
+# Use baseimage's init process.
 CMD ["/sbin/my_init"]
 
 # If you're using the 'customizable' variant, you need to explicitly opt-in

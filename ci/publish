@@ -1,0 +1,19 @@
+#!/bin/bash
+
+THIS_DIR="$(cd "$(dirname "$0")"; pwd)"
+BASE_DIR="$(dirname $THIS_DIR)"
+
+IMAGE_NAME="rails-baseimage"
+version=$(cat $BASE_DIR/version.txt)
+
+# TODO: git[hub] tag release
+
+# TODO: avoid re-using tag with: https://github.com/docker/distribution/issues/2412#issuecomment-422877499 OR https://stackoverflow.com/a/37566943/1735179
+echo DEBUG: docker tag "singlecellportal/$IMAGE_NAME:latest" "singlecellportal/$IMAGE_NAME:$version"
+docker tag "singlecellportal/$IMAGE_NAME:latest" "singlecellportal/$IMAGE_NAME:$version" || { echo "ERROR: $(basename $0): failed to tag $IMAGE_NAME with $version ">&2; exit 1; }
+docker image ls | grep "\\b$IMAGE_NAME\\b" | grep "$version" || exit 1
+echo DEBUG: docker push "singlecellportal/$IMAGE_NAME:$version" || { echo "ERROR: $(basename $0): failed to push $IMAGE_NAME:$version ">&2; exit 1; }
+docker push "singlecellportal/$IMAGE_NAME:$version" || exit 1
+echo DEBUG: docker push "singlecellportal/$IMAGE_NAME:latest" || { echo "ERROR: $(basename $0): failed to push $IMAGE_NAME:latest ">&2; exit 1; }
+docker push "singlecellportal/$IMAGE_NAME:latest" || exit 1
+

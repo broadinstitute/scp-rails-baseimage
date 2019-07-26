@@ -8,5 +8,5 @@ IMAGE_NAME="image_builder"
 IMAGE_BUILDER_SOURCE_DIR="$BASE_DIR/lib/$IMAGE_NAME"
 
 cd "$IMAGE_BUILDER_SOURCE_DIR" || exit 1
-docker build -t broadinstitute/$IMAGE_NAME . || exit 1
-docker image ls | grep "$IMAGE_NAME" || exit 1
+docker build -t singlecellportal/$IMAGE_NAME . || exit 1
+docker image ls | grep "\\b$IMAGE_NAME\\b" || exit 1

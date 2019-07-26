@@ -10,7 +10,7 @@ for docker_command in stop rm; do
     docker $docker_command image_builder_container 2> /dev/null
 done
 
-IMAGE_BUILDER_IMAGE="broadinstitute/image_builder:latest"
+IMAGE_BUILDER_IMAGE="singlecellportal/image_builder:latest"
 DOCKER_RUN_FLAGS="-it --rm"
 docker run --name image_builder_container \
     $DOCKER_RUN_FLAGS \
