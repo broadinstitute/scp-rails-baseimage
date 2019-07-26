@@ -3,7 +3,11 @@
 echo "you may not want to run this, edit it if you do"; exit 1
 
 # TODO: move this to README? make this self-documenting?
+
 brew cask upgrade google-cloud-sdk || exit 1
 sudo gcloud components install docker-credential-gcr || exit 1
 gcloud components update || exit 1
 gcloud auth configure-docker || exit 1
+
+# only for publishing:
+docker login

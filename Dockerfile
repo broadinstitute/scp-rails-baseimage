@@ -50,8 +50,8 @@ RUN apt-get clean && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 # Install nginx-headers-more package
 RUN apt-get update && apt-get install -y -qq --no-install-recommends libnginx-mod-http-headers-more-filter
 RUN apt-get clean && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
- 
-# add yarn  
+
+# add yarn
 RUN curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | sudo apt-key add -
 RUN echo "deb [trusted=yes] https://dl.yarnpkg.com/debian/ stable main" | sudo tee /etc/apt/sources.list.d/yarn.list
 RUN apt-get update && apt-get install yarn
@@ -71,7 +71,7 @@ RUN openssl req -newkey rsa:4096 -days 365 -nodes -x509 \
     -subj "/C=US/ST=Massachusetts/L=Cambridge/O=Broad Institute/OU=BITS DevOps/CN=localhost/subjectAltName=localhost/emailAddress=bistline@broadinstitute.org" \
     -keyout /etc/pki/tls/private/localhost.key \
     -out /etc/pki/tls/certs/localhost.crt
-    
+
 # Add Root CA and DHE key-exchange cert
 COPY ./GeoTrust_Universal_CA.pem /usr/local/share/ca-certificates
 COPY ./dhparam.pem /usr/local/share/ca-certificates

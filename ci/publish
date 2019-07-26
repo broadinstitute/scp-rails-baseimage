@@ -12,8 +12,7 @@ version=$(cat $BASE_DIR/version.txt)
 echo DEBUG: docker tag "singlecellportal/$IMAGE_NAME:latest" "singlecellportal/$IMAGE_NAME:$version"
 docker tag "singlecellportal/$IMAGE_NAME:latest" "singlecellportal/$IMAGE_NAME:$version" || { echo "ERROR: $(basename $0): failed to tag $IMAGE_NAME with $version ">&2; exit 1; }
 docker image ls | grep "\\b$IMAGE_NAME\\b" | grep "$version" || exit 1
-echo DEBUG: docker push "singlecellportal/$IMAGE_NAME:$version" || { echo "ERROR: $(basename $0): failed to push $IMAGE_NAME:$version ">&2; exit 1; }
-docker push "singlecellportal/$IMAGE_NAME:$version" || exit 1
-echo DEBUG: docker push "singlecellportal/$IMAGE_NAME:latest" || { echo "ERROR: $(basename $0): failed to push $IMAGE_NAME:latest ">&2; exit 1; }
-docker push "singlecellportal/$IMAGE_NAME:latest" || exit 1
-
+echo DEBUG: docker push "singlecellportal/$IMAGE_NAME:$version"
+docker push "singlecellportal/$IMAGE_NAME:$version" || { echo "ERROR: $(basename $0): failed to push $IMAGE_NAME:$version ">&2; exit 1; }
+echo DEBUG: docker push "singlecellportal/$IMAGE_NAME:latest"
+docker push "singlecellportal/$IMAGE_NAME:latest" || { echo "ERROR: $(basename $0): failed to push $IMAGE_NAME:latest ">&2; exit 1; }

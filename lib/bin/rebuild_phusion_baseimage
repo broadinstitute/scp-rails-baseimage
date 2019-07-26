@@ -3,6 +3,7 @@
 # TODO: DRY this script as much as possible with the other script for building a phusion package
 
 GITHUB_REPO="phusion/baseimage-docker"
+RELEASE_TAG="0.11"
 
 THIS_DIR="$(cd "$(dirname "$0")"; pwd)"
 BASE_DIR="$(dirname $(dirname $THIS_DIR))"
@@ -14,7 +15,7 @@ IMAGE_NAME="$(new_image_name_from_repo $GITHUB_REPO)"
 
 # TODO: function extract?:
 SOURCE_DIR="$IMAGE_REPOS_DIR/$(dir_name_from_repo $GITHUB_REPO)"
-github_checkout $GITHUB_REPO $SOURCE_DIR "0.11" || exit 1
+github_checkout $GITHUB_REPO $SOURCE_DIR "$RELEASE_TAG" || exit 1
 cd $SOURCE_DIR || exit 1
 
 export PATH="$BASE_DIR/lib/docker_shim:$PATH" # use a docker shim to filter out arguments we don't like
