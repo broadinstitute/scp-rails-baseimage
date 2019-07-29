@@ -3,16 +3,49 @@
 THIS_DIR="$(cd "$(dirname "$0")"; pwd)"
 BASE_DIR="$(dirname $THIS_DIR)"
 
-IMAGE_NAME="rails-baseimage"
-version=$(cat $BASE_DIR/version.txt)
+# TODO: publish version 1.0.
 
-# TODO: git[hub] tag release
+function main {
+    IMAGE_NAME="rails-baseimage"
+    version=$(cat $BASE_DIR/version.txt)
+    echo "DEBUG: \$version is \"$version\"."
 
-# TODO: avoid re-using tag with: https://github.com/docker/distribution/issues/2412#issuecomment-422877499 OR https://stackoverflow.com/a/37566943/1735179
-echo DEBUG: docker tag "singlecellportal/$IMAGE_NAME:latest" "singlecellportal/$IMAGE_NAME:$version"
-docker tag "singlecellportal/$IMAGE_NAME:latest" "singlecellportal/$IMAGE_NAME:$version" || { echo "ERROR: $(basename $0): failed to tag $IMAGE_NAME with $version ">&2; exit 1; }
-docker image ls | grep "\\b$IMAGE_NAME\\b" | grep "$version" || exit 1
-echo DEBUG: docker push "singlecellportal/$IMAGE_NAME:$version"
-docker push "singlecellportal/$IMAGE_NAME:$version" || { echo "ERROR: $(basename $0): failed to push $IMAGE_NAME:$version ">&2; exit 1; }
-echo DEBUG: docker push "singlecellportal/$IMAGE_NAME:latest"
-docker push "singlecellportal/$IMAGE_NAME:latest" || { echo "ERROR: $(basename $0): failed to push $IMAGE_NAME:latest ">&2; exit 1; }
+    if docker_image_has_been_published "hub.docker.com" "singlecellportal/$IMAGE_NAME" "$version" ; then
+        echo "ERROR: $(basename $0): version $version has already been published. Please edit version.txt according to semver and try again." >&2
+    else
+        docker tag "singlecellportal/$IMAGE_NAME:latest" "singlecellportal/$IMAGE_NAME:$version" || { echo "ERROR: $(basename $0): failed to tag $IMAGE_NAME with $version ">&2; exit 1; }
+        docker image ls | grep "\\b$IMAGE_NAME\\b" | grep "$version" || exit 1 #confirm taggging worked
+        docker push "singlecellportal/$IMAGE_NAME:latest" || { echo "ERROR: $(basename $0): failed to push $IMAGE_NAME:latest ">&2; exit 1; }
+        docker push "singlecellportal/$IMAGE_NAME:$version" || { echo "ERROR: $(basename $0): failed to push $IMAGE_NAME:$version ">&2; exit 1; }
+        # TODO: git[hub] tag release
+    fi
+}
+
+# making sure publish fails if version.txt has not been updated.
+function docker_image_has_been_published {
+    # TODO: avoid re-using tag with: https://github.com/docker/distribution/issues/2412#issuecomment-422877499 OR https://stackoverflow.com/a/37566943/1735179 ... check the hashes too, because if the versions AND hashes match, you can just no-op and exit 0 . If you bake commit hashes from the other repositories in, then it even protects against release tags changing
+
+    REGISTRY="$1"
+    IMAGE_SCOPED_NAME="$2"
+    TAG="$3"
+
+    if docker_image_has_been_published_unsafe "$REGISTRY" "$IMAGE_SCOPED_NAME" "latest"; then
+        docker_image_has_been_published_unsafe "$REGISTRY" "$IMAGE_SCOPED_NAME" "$TAG"
+    else
+        echo "ERROR: $(basename $0): cannot confirm what has previously published."
+        exit 1
+    fi
+
+}
+
+function docker_image_has_been_published_unsafe {
+    REGISTRY="$1"
+    IMAGE_SCOPED_NAME="$2"
+    TAG="$3"
+
+    TAG_TEST_URL="https://$REGISTRY/v2/repositories/$IMAGE_SCOPED_NAME/tags/$TAG/"
+    HTTP_CODE="$(curl -X "HEAD" -L -s -w "%{http_code}" "$TAG_TEST_URL" -m 2 )"
+    [ "200" == "$HTTP_CODE" ]
+}
+
+main "$@"

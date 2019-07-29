@@ -21,5 +21,5 @@ cd $SOURCE_DIR || exit 1
 export PATH="$BASE_DIR/lib/docker_shim:$PATH" # use a docker shim to filter out arguments we don't like
 
 export PLATFORM=amd64 QEMU_ARCH=amd64 TAG_ARCH=amd64
-make build BASE_IMAGE="marketplace.gcr.io/google/ubuntu1804:latest" NAME="singlecellportal/$IMAGE_NAME" || exit 1 # TODO: rename (NAME). We could set our own name, and take version numbers into account. Use a ./version.txt file for every docker image we build.
+make build BASE_IMAGE="marketplace.gcr.io/google/ubuntu1804:latest" NAME="singlecellportal/$IMAGE_NAME" || exit 1
 docker image ls | grep "\\b$IMAGE_NAME\\b" || exit 1
