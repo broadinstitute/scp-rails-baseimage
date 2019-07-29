@@ -22,4 +22,4 @@ export PATH="$BASE_DIR/lib/docker_shim:$PATH" # use a docker shim to filter out 
 
 export PLATFORM=amd64 QEMU_ARCH=amd64 TAG_ARCH=amd64
 make build BASE_IMAGE="marketplace.gcr.io/google/ubuntu1804:latest" NAME="singlecellportal/$IMAGE_NAME" || exit 1
-docker image ls | grep "\\b$IMAGE_NAME\\b" || exit 1
+docker image ls | grep "\\b$IMAGE_NAME\\b" || exit 1 # TODO: | grep version

@@ -9,7 +9,7 @@ cd $SOURCE_DIR || exit 1
 IMAGE_NAME="rails-baseimage"
 # TODO: use interstitial versions to match source material, do not publish them
 docker build -t "singlecellportal/$IMAGE_NAME:latest" . || exit 1 # Don't tag with actual version numbers until the publish script, so you can build, attempt publish, change version.txt when it fails, and re-attempt publish without having to build again
-docker image ls | grep "\\b$IMAGE_NAME\\b" || exit 1
+docker image ls | grep "\\b$IMAGE_NAME\\b" | grep "\\blatest\\b" || exit 1
 
 # TODO: publish (separate script)
 # TODO:     docker login

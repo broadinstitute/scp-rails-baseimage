@@ -27,4 +27,4 @@ sed -i 's~^FROM[[:space:]].\{1,\}$~FROM singlecellportal/phusion_baseimage:0.11-
 # TODO: maybe use as an alternate since it's got all the rubies in it?: MAKE_TARGET=build_full
 MAKE_TARGET=build_ruby25
 make $MAKE_TARGET NAME="singlecellportal/$IMAGE_NAME" || exit 1
-docker image ls | grep "\\b$IMAGE_NAME\\b" || exit 1
+docker image ls | grep "\\b$IMAGE_NAME\\b" || exit 1 # TODO: | grep version
