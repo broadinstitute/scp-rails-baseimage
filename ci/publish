@@ -8,7 +8,6 @@ BASE_DIR="$(dirname $THIS_DIR)"
 function main {
     IMAGE_NAME="rails-baseimage"
     version=$(cat $BASE_DIR/version.txt)
-    echo "DEBUG: \$version is \"$version\"."
 
     if docker_image_has_been_published "hub.docker.com" "singlecellportal/$IMAGE_NAME" "$version" ; then
         echo "ERROR: $(basename $0): version $version has already been published. Please edit version.txt according to semver and try again." >&2
@@ -25,9 +24,9 @@ function main {
 function docker_image_has_been_published {
     # TODO: avoid re-using tag with: https://github.com/docker/distribution/issues/2412#issuecomment-422877499 OR https://stackoverflow.com/a/37566943/1735179 ... check the hashes too, because if the versions AND hashes match, you can just no-op and exit 0 . If you bake commit hashes from the other repositories in, then it even protects against release tags changing
 
-    REGISTRY="$1"
-    IMAGE_SCOPED_NAME="$2"
-    TAG="$3"
+    local REGISTRY="$1"
+    local IMAGE_SCOPED_NAME="$2"
+    local TAG="$3"
 
     if docker_image_has_been_published_unsafe "$REGISTRY" "$IMAGE_SCOPED_NAME" "latest"; then
         docker_image_has_been_published_unsafe "$REGISTRY" "$IMAGE_SCOPED_NAME" "$TAG"
@@ -39,9 +38,9 @@ function docker_image_has_been_published {
 }
 
 function docker_image_has_been_published_unsafe {
-    REGISTRY="$1"
-    IMAGE_SCOPED_NAME="$2"
-    TAG="$3"
+    local REGISTRY="$1"
+    local IMAGE_SCOPED_NAME="$2"
+    local TAG="$3"
 
     TAG_TEST_URL="https://$REGISTRY/v2/repositories/$IMAGE_SCOPED_NAME/tags/$TAG/"
     HTTP_CODE="$(curl -X "HEAD" -L -s -w "%{http_code}" "$TAG_TEST_URL" -m 2 )"
