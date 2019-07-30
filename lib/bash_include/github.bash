@@ -13,12 +13,15 @@ function github_checkout {
 
     mkdir -p $(dirname $CLONE_DIR)
     if ! [ -d  $CLONE_DIR ]; then
-        git clone $CLONE_REPO $CLONE_DIR || exit 1
+        git clone --branch $TAG $CLONE_REPO -- $CLONE_DIR || exit 1
     fi
     pushd $CLONE_DIR || exit 1
+    git fetch -a || exit 1
     git checkout -- . || exit 1
     git checkout $TAG -- || exit 1
-    echo "$CLONE_DIR up to date!"
+    echo "$CLONE_DIR is at $TAG"
+    [ "$TAG" == "$(git tag --points-at HEAD)" ] || exit 1 # confirmation
+    [ "" == "$(git status --porcelain)" ] || exit 1 # confirmation
     popd
 }
 
