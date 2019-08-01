@@ -1,8 +1,5 @@
 #!/bin/bash
 
-# TODO: all other repos we are using to build intermediate versions should be pinned to specific versions (well, technically git commits since it's source), perhaps in a file like requirements.txt or maybe follow some other convention
-# TODO: ...if we do all that, and everything is pinned, then we just need to to bake the commit hash into the final image, although we could still choose to add other information such as versions or commit hashes of other repos if we wanted to
-
 THIS_DIR="$(cd "$(dirname "$0")"; pwd)"
 BASE_DIR="$(dirname $THIS_DIR)"
 BIN="$BASE_DIR/lib/bin"
@@ -13,13 +10,6 @@ function main {
     $BIN/rebuild_phusion_baseimage || { echo "ERROR: $(basename $0): FAILED to rebuild phusion base image" >&2; exit 1; }
     $BIN/rebuild_phusion_passenger_image || { echo "ERROR: $(basename $0): FAILED to rebuild phusion passenger image" >&2; exit 1; }
     $BIN/rebuild_image || { echo "ERROR: $(basename $0): FAILED to build docker image" >&2; exit 1; }
-
-    # TODO: set up a jenkins job. requires decisions about version numbering
-    # TODO: capture version numbers of images, git state, etc. to bake into image for traceability?
-    # TODO:     - an idea: figure out the commit hash and/or version number of source images (well, their source), and explicitly use/record them
-    # TODO:     - how to tag docker images with git commit: https://blog.scottlowe.org/2017/11/08/how-tag-docker-images-git-commit-information/
-    # TODO:         - on git labels & best practices: https://adilsoncarvalho.com/use-labels-on-your-docker-images-3abe4477e9f5
-    # TODO:     - I also think it might be good to park a full report somewhere in /etc/ , sort of like how /etc/os-release is there and contains basic system information
 
 }
 

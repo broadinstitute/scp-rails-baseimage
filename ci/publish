@@ -27,9 +27,8 @@ function main {
     fi
 }
 
-# making sure publish fails if version.txt has not been updated.
+# making sure publish fails if version.txt has not been updated to avoid re-using the version tag:
 function docker_image_has_been_published {
-    # TODO: avoid re-using tag with: https://github.com/docker/distribution/issues/2412#issuecomment-422877499 OR https://stackoverflow.com/a/37566943/1735179 ... check the hashes too, because if the versions AND hashes match, you can just no-op and exit 0 . If you bake commit hashes from the other repositories in, then it even protects against release tags changing
 
     local REGISTRY="$1"
     local IMAGE_SCOPED_NAME="$2"

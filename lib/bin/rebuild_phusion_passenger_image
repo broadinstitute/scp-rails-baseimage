@@ -20,6 +20,6 @@ sed -i "s~^FROM[[:space:]].\{1,\}$~FROM $DOCKER_NAMESPACE/phusion_baseimage:$PHU
 # TODO: maybe use as an alternate since it's got all the rubies in it?: MAKE_TARGET=build_full
 MAKE_TARGET=build_ruby25
 MAKE_OUTPUT="$(make $MAKE_TARGET NAME="$IMAGE_FULLNAME")" || exit 1
-echo "$MAKE_OUTPUT" # TODO: DELETE?
+echo "$MAKE_OUTPUT"
 
 echo "$MAKE_OUTPUT" | grep "^Successfully tagged $IMAGE_FULLNAME.*:$PHUSION_PASSENGER_IMAGE_VERSION\$" >/dev/null || { echo ERROR: $(basename $0): image not tagged as expected; exit 1; }

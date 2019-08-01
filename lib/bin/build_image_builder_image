@@ -1,7 +1,5 @@
 #!/bin/bash
 
-# TODO: document how to use this for local development
-
 THIS_DIR="$(cd "$(dirname "$0")"; pwd)"
 BASE_DIR="$(dirname $(dirname $THIS_DIR))"
 
