@@ -18,6 +18,13 @@ for ((i=0;i<"${#ARGS_ARRAY[@]}";++i)); do
     fi
 done
 
+for ((i=0;i<"${#ARGS_ARRAY[@]}";++i)); do           # TODO: DELETE after testing is done
+    if [ "--no-cache" == "${ARGS_ARRAY[i]}" ]; then # TODO: DELETE after testing is done
+        unset ARGS_ARRAY[i]                         # TODO: DELETE after testing is done
+        break                                       # TODO: DELETE after testing is done
+    fi                                              # TODO: DELETE after testing is done
+done                                                # TODO: DELETE after testing is done
+
 echo "This was called: \"$0 $@\""
 echo "...but will translate to: \"$REAL_DOCKER ${ARGS_ARRAY[@]}\""
 exec $REAL_DOCKER "${ARGS_ARRAY[@]}"

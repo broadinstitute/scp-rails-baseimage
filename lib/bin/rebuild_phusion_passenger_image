@@ -13,6 +13,8 @@ SOURCE_DIR="$IMAGE_REPOS_DIR/$(dir_name_from_repo $PHUSION_PASSENGER_IMAGE_REPO)
 github_checkout "$PHUSION_PASSENGER_IMAGE_REPO" "$SOURCE_DIR" "$PHUSION_PASSENGER_IMAGE_REPO_RELEASE_TAG" || exit 1
 cd "$SOURCE_DIR" || exit 1
 
+export PATH="$BASE_DIR/lib/docker_shim:$PATH" # use a docker shim to filter out arguments we don't like # TODO: DELETE after fast test cycles are not needed
+
 DOCKER_FILE="./image/Dockerfile"
 sed -i "s~^FROM[[:space:]].\{1,\}$~FROM $DOCKER_NAMESPACE/phusion_baseimage:$PHUSION_BASE_IMAGE_VERSION~" $DOCKER_FILE
 

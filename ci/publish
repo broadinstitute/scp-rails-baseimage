@@ -22,7 +22,10 @@ function main {
         docker push "$MAIN_IMAGE_FULLNAME:$version" || { echo "ERROR: $(basename $0): failed to push $MAIN_IMAGE_NAME:$version ">&2; exit 1; }
 
         # TODO: test git[hub] release tag from jenkins job, which might not work the same:
+        # TODO: this is also problematic, because if not run from jenkins, what's to say there aren't local changes?
+        echo DEBUG: running: git tag $version
         git tag "$version" || exit 1
+        echo DEBUG: running: git push origin $version
         git push origin "$version" || exit 1
 
     fi

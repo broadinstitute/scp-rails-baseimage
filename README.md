@@ -24,7 +24,7 @@ Once you have made changes that you are ready to test, you'll want to build the 
 
 ## publishing changes ##
 
-To publish your changes, you'll need to increment the version number in `./version.txt` (in accordance with semver, please), and commit it with your other changes to the `master` branch. At that point, you can build and publish your code with [this jenkins job](https://scp-jenkins.dsp-techops.broadinstitute.org/job/scp-rails-baseimage-publish/). Your changes will show up on docker hub after that. It is possible, but not recommended, to publish from your workstation by running `./ci/publish`
+To publish your changes, you'll need to increment the version number in `./version.txt` (in accordance with semver, please), and get your changes committed, pushed, and merged into the `master` branch. At that point, [this jenkins job](https://scp-jenkins.dsp-techops.broadinstitute.org/job/scp-rails-baseimage-publish/) will attempt to build and publish your changes to docker hub. It is possible, but not recommended, to publish from your workstation by running `./ci/publish`
 
 # potential improvments #
 
