@@ -14,6 +14,7 @@ function main {
 
     if docker_image_has_been_published "hub.docker.com" "$MAIN_IMAGE_FULLNAME" "$version" ; then
         echo "ERROR: $(basename $0): version $version has already been published. Please edit version.txt according to semver and try again." >&2
+        exit 1
     else
         docker tag "$MAIN_IMAGE_FULLNAME:latest" "$MAIN_IMAGE_FULLNAME:$version" || { echo "ERROR: $(basename $0): failed to tag $MAIN_IMAGE_NAME with $version ">&2; exit 1; }
         docker image ls | grep "\\b$MAIN_IMAGE_FULLNAME\\b" | grep "\\b$version\\b" || exit 1 #confirm taggging worked
