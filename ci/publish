@@ -3,20 +3,22 @@
 THIS_DIR="$(cd "$(dirname "$0")"; pwd)"
 BASE_DIR="$(dirname $THIS_DIR)"
 
+. $BASE_DIR/lib/bash_include/config.bash
+
+# TODO: (?): docker login
 # TODO: should this fail if you try to run it locally instead of from jenkins? at least if you don't pass -f/--force? maybe we should bake username/hostname into the image for traceability instead?
 # TODO: publish version 1.0.
 
 function main {
-    IMAGE_NAME="rails-baseimage"
     version=$(cat $BASE_DIR/version.txt)
 
-    if docker_image_has_been_published "hub.docker.com" "singlecellportal/$IMAGE_NAME" "$version" ; then
+    if docker_image_has_been_published "hub.docker.com" "$MAIN_IMAGE_FULLNAME" "$version" ; then
         echo "ERROR: $(basename $0): version $version has already been published. Please edit version.txt according to semver and try again." >&2
     else
-        docker tag "singlecellportal/$IMAGE_NAME:latest" "singlecellportal/$IMAGE_NAME:$version" || { echo "ERROR: $(basename $0): failed to tag $IMAGE_NAME with $version ">&2; exit 1; }
-        docker image ls | grep "\\b$IMAGE_NAME\\b" | grep "\\b$version\\b" || exit 1 #confirm taggging worked
-        docker push "singlecellportal/$IMAGE_NAME:latest" || { echo "ERROR: $(basename $0): failed to push $IMAGE_NAME:latest ">&2; exit 1; }
-        docker push "singlecellportal/$IMAGE_NAME:$version" || { echo "ERROR: $(basename $0): failed to push $IMAGE_NAME:$version ">&2; exit 1; }
+        docker tag "$MAIN_IMAGE_FULLNAME:latest" "$MAIN_IMAGE_FULLNAME:$version" || { echo "ERROR: $(basename $0): failed to tag $MAIN_IMAGE_NAME with $version ">&2; exit 1; }
+        docker image ls | grep "\\b$MAIN_IMAGE_FULLNAME\\b" | grep "\\b$version\\b" || exit 1 #confirm taggging worked
+        docker push "$MAIN_IMAGE_FULLNAME:latest" || { echo "ERROR: $(basename $0): failed to push $MAIN_IMAGE_NAME:latest ">&2; exit 1; }
+        docker push "$MAIN_IMAGE_FULLNAME:$version" || { echo "ERROR: $(basename $0): failed to push $MAIN_IMAGE_NAME:$version ">&2; exit 1; }
 
         # TODO: test git[hub] release tag from jenkins job, which might not work the same:
         git tag "$version" || exit 1

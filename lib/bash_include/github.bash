@@ -6,10 +6,7 @@ function github_checkout {
 
     if [ -z "$TAG" ];then echo "ERROR: github_checkout requires a tag" >&2;exit 1;fi
 
-    # TODO: use a read-only URL so jenkins can succeed
-    CLONE_REPO="git@github.com:$GITHUB_REPO_NAME.git" # TODO: DELETE
-    CLONE_REPO="git://github.com/$GITHUB_REPO_NAME.git" # read-only form of the URL # TODO: DELETE
-    CLONE_REPO="https://github.com/$GITHUB_REPO_NAME.git" # https means we don't need to deal with ssh known_hosts
+    CLONE_REPO="https://github.com/$GITHUB_REPO_NAME.git" # https means we don't need to deal with ssh known_hosts or any authentication at all
 
     mkdir -p $(dirname $CLONE_DIR)
     if ! [ -d  $CLONE_DIR ]; then

@@ -1,30 +1,25 @@
 #!/bin/bash
 
-# TODO: DRY this script as much as possible with the other script for building a phusion package
-
-GITHUB_REPO="phusion/passenger-docker"
-RELEASE_TAG="rel-1.0.6"
-
-THIS_DIR="$(cd "$(dirname "$0")"; pwd)"
+THIS_DIR="$(cd "$(dirname "$BASH_SOURCE")"; pwd)"
 BASE_DIR="$(dirname $(dirname $THIS_DIR))"
-IMAGE_REPOS_DIR="$BASE_DIR/tmp" # TODO: DRY with other scripts
 
+. $BASE_DIR/lib/bash_include/config.bash
 . $BASE_DIR/lib/bash_include/github.bash
 
-IMAGE_NAME="$(new_image_name_from_repo $GITHUB_REPO)"
+PHUSION_PASSENGER_IMAGE_NAME="$(new_image_name_from_repo $PHUSION_PASSENGER_IMAGE_REPO)"
+IMAGE_FULLNAME="$DOCKER_NAMESPACE/$PHUSION_PASSENGER_IMAGE_NAME"
 
-# TODO: function extract?:
-SOURCE_DIR="$IMAGE_REPOS_DIR/$(dir_name_from_repo $GITHUB_REPO)"
-github_checkout $GITHUB_REPO $SOURCE_DIR "$RELEASE_TAG" || exit 1
-cd $SOURCE_DIR || exit 1
-
-export PATH="$BASE_DIR/lib/docker_shim:$PATH" # use a docker shim to filter out arguments we don't like # TODO: DELETE after fast test cycles are not needed
+SOURCE_DIR="$IMAGE_REPOS_DIR/$(dir_name_from_repo $PHUSION_PASSENGER_IMAGE_REPO)"
+github_checkout "$PHUSION_PASSENGER_IMAGE_REPO" "$SOURCE_DIR" "$PHUSION_PASSENGER_IMAGE_REPO_RELEASE_TAG" || exit 1
+cd "$SOURCE_DIR" || exit 1
 
 DOCKER_FILE="./image/Dockerfile"
-sed -i 's~^FROM[[:space:]].\{1,\}$~FROM singlecellportal/phusion_baseimage:0.11-amd64~' $DOCKER_FILE # TODO: deal with versions # TODO: this would be a good place to add code to record it
+sed -i "s~^FROM[[:space:]].\{1,\}$~FROM $DOCKER_NAMESPACE/phusion_baseimage:$PHUSION_BASE_IMAGE_VERSION~" $DOCKER_FILE
 
 # TODO: upgrade? warn of available upgrades?: MAKE_TARGET=build_ruby26
 # TODO: maybe use as an alternate since it's got all the rubies in it?: MAKE_TARGET=build_full
 MAKE_TARGET=build_ruby25
-make $MAKE_TARGET NAME="singlecellportal/$IMAGE_NAME" || exit 1
-docker image ls | grep "\\b$IMAGE_NAME\\b" || exit 1 # TODO: | grep version
+MAKE_OUTPUT="$(make $MAKE_TARGET NAME="$IMAGE_FULLNAME")" || exit 1
+echo "$MAKE_OUTPUT" # TODO: DELETE?
+
+echo "$MAKE_OUTPUT" | grep "^Successfully tagged $IMAGE_FULLNAME.*:$PHUSION_PASSENGER_IMAGE_VERSION\$" >/dev/null || { echo ERROR: $(basename $0): image not tagged as expected; exit 1; }
