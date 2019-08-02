@@ -10,8 +10,8 @@ BASE_DIR="$(dirname $THIS_DIR)"
 # TODO: point jenkins job at master eventually
 # TODO: maybe another jenkins job and corresponding script for testing? (build, and then: (from Jon) "I think just starting the container, and possibly mapping in a generic webapp.conf file to have it start up nginx and expose port 80 or 443 and make a GET on localhost" )
 
-[ -n "$JENKINS_VAULT_TOKEN_PATH" -a -f "$JENKINS_VAULT_TOKEN_PATH" ] || { echo "ERROR: $(basename $0): \$JENKINS_VAULT_TOKEN_PATH is \"$JENKINS_VAULT_TOKEN_PATH\", but should be a valid file path" >&2 ; exit 1; }
-[ -n "$VAULT_ADDR" ] || { echo "ERROR: $(basename $0): \$VAULT_ADDR is empty" >&2 ; exit 1; }
+export JENKINS_VAULT_TOKEN_PATH=/home/jenkins/temp-vault-token
+export VAULT_ADDR=https://clotho.broadinstitute.org:8200
 
 # login to dockerhub
 SCPDOCKERHUB_VAULT_PATH="secret/kdux/scp/production/scp_dockerhub_credentials.json"
