@@ -4,6 +4,8 @@
 
 # defaults
 DOCKER_IMAGE_FOR_VAULT_CLIENT='vault:1.1.3'
+export VAULT_ADDR
+export JENKINS_VAULT_TOKEN_PATH
 
 # load common utils
 . $BASE_DIR/lib/bash_include/bash_utils.sh || exit 1
@@ -29,7 +31,6 @@ function determine_export_filename {
 function extract_vault_secrets_as_env_file {
     VAULT_SECRET_PATH="$1"
     echo "setting filename for $VAULT_SECRET_PATH export"
-    SECRET_EXPORT_FILENAME="$(determine_export_filename $VAULT_SECRET_PATH bash)" # TODO: DELETE?
     SECRET_EXPORT_FILEPATH="$(determine_export_filepath $VAULT_SECRET_PATH bash)" || exit 1
     # load raw secrets from vault
     echo "extracting vault secrets from $VAULT_SECRET_PATH"
