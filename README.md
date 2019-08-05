@@ -1,8 +1,8 @@
 This code is used to build and publish a Docker image that the Single Cell Portal team uses as a basis for Rails servers.
 
-# What is this this? Why does it exists? #
+# What is this? Why does it exists? #
 
-This provides a base image with ruby on rails ready to go with phusion passenger. The single cell portal has a docker image that was formerly built on `phusion/passenger-docker`, but this ensures that it's built on a base image provided by Google, which is good because they keep those images up-to-date with security fixes and it apparently makes our auditors happy. So here, we rebuild a couple images from Phusion with tweaks to make that happen.
+This provides a base image with Ruby on Rails ready to go with Phusion Passenger. The Single Cell Portal has a Docker image that was formerly built on `phusion/passenger-docker`, but this ensures that it's built on a [managed base image](https://cloud.google.com/container-registry/docs/managed-base-images) provided by Google, which is good because they keep those images up-to-date with security fixes and it apparently makes our auditors happy. So here, we rebuild a couple images from Phusion with tweaks to make that happen.
 
 # Using the image #
 
