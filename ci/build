@@ -1,5 +1,7 @@
 #!/bin/bash
 
+# USAGE: run with no arguments on a system with all prequisites installed to build the image. See also: local_build
+
 THIS_DIR="$(cd "$(dirname "$0")"; pwd)"
 BASE_DIR="$(dirname $THIS_DIR)"
 BIN="$BASE_DIR/lib/bin"

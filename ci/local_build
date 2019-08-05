@@ -1,5 +1,7 @@
 #!/bin/bash
 
+# USAGE: run with no arguments to build the image using a standardized docker container for convenient development
+
 THIS_DIR="$(cd "$(dirname "$0")"; pwd)"
 BASE_DIR="$(dirname $THIS_DIR)"
 BIN="$BASE_DIR/lib/bin"
