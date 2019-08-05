@@ -28,7 +28,6 @@ To publish your changes, you'll need to increment the version number in `./versi
 
 # potential improvments #
 
-* provide traceabiltity by putting commit hashes and version numbers in image labels and/or text files baked into the image.
 * automatically keep track of new releases to underlying layers to help us keep this image up to date.
 * automatically test the image by making sure it can serve a page.
     * add a jenkins job to run the build/test on all branches (except master)

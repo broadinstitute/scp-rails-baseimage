@@ -15,6 +15,11 @@ FROM singlecellportal/phusion_passenger-ruby25:1.0.6
 #FROM singlecellportal/phusion_passenger-nodejs:<VERSION>
 #FROM singlecellportal/phusion_passenger-customizable:<VERSION>
 
+ARG VCS_REF="unspecified"
+LABEL org.label-schema.vendor="Broad Institute" \
+      org.label-schema.vcs-url="https://github.com/broadinstitute/scp-rails-baseimage" \
+      org.label-schema.vcs-ref="$VCS_REF"
+
 # Set correct environment variables.
 ENV HOME /root
 USER root
@@ -75,3 +80,6 @@ RUN openssl req -newkey rsa:4096 -days 365 -nodes -x509 \
 # Add Root CA and DHE key-exchange cert
 COPY ./GeoTrust_Universal_CA.pem /usr/local/share/ca-certificates
 COPY ./dhparam.pem /usr/local/share/ca-certificates
+
+RUN mkdir -p /etc/docker_image_creation_info
+COPY ./tmp/*state_report.txt /etc/docker_image_creation_info/
