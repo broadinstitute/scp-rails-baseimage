@@ -1,5 +1,7 @@
 #!/bin/bash
 
+# USAGE: run this with no argumants to publish the image that was built. Or better yet, don't run this, and let the jenkins job take care of it.
+
 THIS_DIR="$(cd "$(dirname "$0")"; pwd)"
 BASE_DIR="$(dirname $THIS_DIR)"
 
