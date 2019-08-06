@@ -1,23 +1,25 @@
-# Use phusion/passenger-full as base image. To make your builds reproducible, make
+# Use singlecellportal/phusion_passenger-full as base image. To make your builds reproducible, make
 # sure you lock down to a specific version, not to `latest`!
 # See https://github.com/phusion/passenger-docker/blob/master/Changelog.md for
 # a list of version numbers.
-FROM phusion/passenger-full:1.0.6
+
+FROM singlecellportal/phusion_passenger-ruby25:1.0.6
+#FROM singlecellportal/phusion_passenger-full:1.0.6
 
 # Or, instead of the 'full' variant, use one of these:
-#FROM phusion/passenger-ruby19:<VERSION>
-#FROM phusion/passenger-ruby20:<VERSION>
-#FROM phusion/passenger-ruby21:<VERSION>
-#FROM phusion/passenger-ruby22:0.9.17
-#FROM phusion/passenger-jruby90:<VERSION>
-#FROM phusion/passenger-nodejs:<VERSION>
-#FROM phusion/passenger-customizable:<VERSION>
+#FROM singlecellportal/phusion_passenger-ruby19:<VERSION>
+#FROM singlecellportal/phusion_passenger-ruby20:<VERSION>
+#FROM singlecellportal/phusion_passenger-ruby21:<VERSION>
+#FROM singlecellportal/phusion_passenger-ruby22:0.9.17
+#FROM singlecellportal/phusion_passenger-jruby90:<VERSION>
+#FROM singlecellportal/phusion_passenger-nodejs:<VERSION>
+#FROM singlecellportal/phusion_passenger-customizable:<VERSION>
 
 # Set correct environment variables.
 ENV HOME /root
 USER root
 
-# Use baseimage-docker's init process.
+# Use baseimage's init process.
 CMD ["/sbin/my_init"]
 
 # If you're using the 'customizable' variant, you need to explicitly opt-in
@@ -48,8 +50,8 @@ RUN apt-get clean && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 # Install nginx-headers-more package
 RUN apt-get update && apt-get install -y -qq --no-install-recommends libnginx-mod-http-headers-more-filter
 RUN apt-get clean && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
- 
-# add yarn  
+
+# add yarn
 RUN curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | sudo apt-key add -
 RUN echo "deb [trusted=yes] https://dl.yarnpkg.com/debian/ stable main" | sudo tee /etc/apt/sources.list.d/yarn.list
 RUN apt-get update && apt-get install yarn
@@ -69,7 +71,7 @@ RUN openssl req -newkey rsa:4096 -days 365 -nodes -x509 \
     -subj "/C=US/ST=Massachusetts/L=Cambridge/O=Broad Institute/OU=BITS DevOps/CN=localhost/subjectAltName=localhost/emailAddress=bistline@broadinstitute.org" \
     -keyout /etc/pki/tls/private/localhost.key \
     -out /etc/pki/tls/certs/localhost.crt
-    
+
 # Add Root CA and DHE key-exchange cert
 COPY ./GeoTrust_Universal_CA.pem /usr/local/share/ca-certificates
 COPY ./dhparam.pem /usr/local/share/ca-certificates

@@ -1,0 +1,24 @@
+#!/bin/bash
+
+# This is a shim for the real docker binary. It will change flags around in
+# whatever ways we need it to, and then call whatever "docker" is in PATH other
+# than this.
+
+THIS_DIR="$(cd "$(dirname "$0")"; pwd)"
+THIS_SCRIPT_NAME="$(basename $0)"
+THIS_SCRIPT_ABSOLUTE_PATH="$THIS_DIR/$THIS_SCRIPT_NAME"
+REAL_DOCKER="$(which -a $THIS_SCRIPT_NAME | grep -v "^$THIS_SCRIPT_ABSOLUTE_PATH$" | head -n 1| grep docker)" || { echo "ERROR: could not find a real docker binary" >&2; exit 1; }
+ARGS_ARRAY=("$@")
+for ((i=0;i<"${#ARGS_ARRAY[@]}";++i)); do
+    # --platform needs docker daemon to run in experimental mode, and we don't need it anyway
+    if [ "--platform" == "${ARGS_ARRAY[i]}" ]; then
+        unset ARGS_ARRAY[i]
+        unset ARGS_ARRAY[i+1]
+        break
+    fi
+done
+
+echo "This was called: \"$0 $@\""
+echo "...but will translate to: \"$REAL_DOCKER ${ARGS_ARRAY[@]}\""
+exec $REAL_DOCKER "${ARGS_ARRAY[@]}"
+

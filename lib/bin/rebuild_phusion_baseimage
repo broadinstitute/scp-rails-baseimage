@@ -1,0 +1,21 @@
+#!/bin/bash
+
+THIS_DIR="$(cd "$(dirname "$BASH_SOURCE")"; pwd)"
+BASE_DIR="$(dirname $(dirname $THIS_DIR))"
+
+. $BASE_DIR/lib/bash_include/config.bash
+. $BASE_DIR/lib/bash_include/github.bash
+
+IMAGE_FULLNAME="$DOCKER_NAMESPACE/$PHUSION_BASE_IMAGE_NAME"
+
+SOURCE_DIR="$IMAGE_REPOS_DIR/$(dir_name_from_repo $PHUSION_BASE_IMAGE_REPO)"
+github_checkout "$PHUSION_BASE_IMAGE_REPO" "$SOURCE_DIR" "$PHUSION_BASE_IMAGE_REPO_RELEASE_TAG" || exit 1
+cd "$SOURCE_DIR" || exit 1
+
+export PATH="$BASE_DIR/lib/docker_shim:$PATH" # use a docker shim to filter out arguments we don't like
+
+export PLATFORM=amd64 QEMU_ARCH=amd64 TAG_ARCH=amd64
+MAKE_OUTPUT="$(make build BASE_IMAGE="$BASE_IMAGE" NAME="$IMAGE_FULLNAME" )" || exit 1
+echo "$MAKE_OUTPUT"
+
+echo "$MAKE_OUTPUT" | grep "^Successfully tagged $IMAGE_FULLNAME:$PHUSION_BASE_IMAGE_VERSION\$" >/dev/null || { echo ERROR: $(basename $0): image not tagged as expected; exit 1; }
