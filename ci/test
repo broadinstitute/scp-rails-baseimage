@@ -1,0 +1,40 @@
+#!/bin/bash
+
+# USAGE: run with no arguments to validate the image with some basic tests.
+
+THIS_DIR="$(cd "$(dirname "$BASH_SOURCE")"; pwd)"
+BASE_DIR="$(dirname $THIS_DIR)"
+BASH_INCLUDE="$BASE_DIR/lib/bash_include"
+BIN="$BASE_DIR/lib/bin" # TODO: DELETE?
+
+. $BASH_INCLUDE/config.bash
+. $BASH_INCLUDE/bash_utils.bash
+. $BASH_INCLUDE/dockerhub.bash
+
+function main {
+    test_for_unpublished_changes
+}
+
+function test_for_unpublished_changes {
+    docker_force_pull $MAIN_IMAGE_FULLNAME:latest || exit_with_error_message "could not pull fresh $MAIN_IMAGE_FULLNAME:latest from network"
+    latest_image_hash="$(get_docker_hash_for_image ${MAIN_IMAGE_FULLNAME}:latest)" || exit 1
+    candidate_image_hash="$(get_docker_hash_for_image ${MAIN_IMAGE_FULLNAME}:candidate)" || exit 1
+    if [ "$latest_image_hash" != "$candidate_image_hash" ]; then
+        assert_main_version_unused
+    fi
+
+}
+
+function docker_force_pull {
+    local IMAGE="$1"
+    docker tag $IMAGE temp
+    docker rmi $IMAGE
+    docker pull $IMAGE
+    docker rmi temp
+}
+
+function get_docker_hash_for_image {
+    docker history $1 | head -n 2 | tail -n 1 | awk '{print $1}'
+}
+
+main "$@"

@@ -28,6 +28,23 @@ To publish your changes, you'll need to increment the version number in `./versi
 
 # Potential improvements #
 
-* automatically keep track of new releases to underlying layers to help us keep this image up to date.
-* automatically test the image by making sure it can serve a page.
-    * add a jenkins job to run the build/test on all branches (except master)
+* (TODO) automatically smoke test changes to the image on any branch to gate pull requests:
+    * (done) add a jenkins job to run the build/test on all branches (except master), and corresponding script, which:
+    * (done) builds the image (and verifies that it built it)
+    * (TODO) tests the image by making sure it can serve a page (nginx welcome page), probably mapping in a generic webapp.conf file to have it start up nginx and expose port 80 or 443 and make a GET on localhost. (don't worry about ssl)
+    * (done) verifies that version.txt contains a version number that hasn't been used yet (or if it has been used, it's for an identical image)
+* (TODO) automatically keep track of new releases to underlying layers to help us keep this image up to date.
+    * (TODO) a test job should watch for changes and "fail" if there are new changes that need to be incorporated
+
+        * (TODO) for the google-maintained base image, which is spec'ed to latest:
+            * (TODO) is phusion really already using the google image?
+            * (TODO) force pull the "latest" image, so you can't possibly get confused by something stale?
+            * (TODO) pull the "latest" image
+            * (TODO) run "docker image history" on it
+            * (TODO) rebuild, tag it something other than "latest" so it doesn't conflict
+            * (TODO) compare image histories
+            * (TODO) fail and email with a clear explanation if they differ
+                * (TODO) the email should state if other tests fail or not
+        * for the phusion-maintained source code that creates the intermediate images (which are pinned to specific versions):
+            * check for more recent release tags, fail if any found
+* add a "clean" script that removes tmp, maybe clears out some docker images, too?

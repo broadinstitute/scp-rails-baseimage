@@ -83,3 +83,4 @@ COPY ./dhparam.pem /usr/local/share/ca-certificates
 
 RUN mkdir -p /etc/docker_image_creation_info
 COPY ./tmp/*state_report.txt /etc/docker_image_creation_info/
+RUN cp /etc/docker_image_creation_info/*state_report.txt /tmp/

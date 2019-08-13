@@ -2,9 +2,11 @@
 
 # USAGE: Use without arguments in a jenkins test job to build and test the image. This keeps jenkins job config complexity low.
 
-THIS_DIR="$(cd "$(dirname "$0")"; pwd)"
+THIS_DIR="$(cd "$(dirname "$BASH_SOURCE")"; pwd)"
 BASE_DIR="$(dirname $THIS_DIR)"
+BASH_INCLUDE="$BASE_DIR/lib/bash_include"
 
-export DEBUG_VERSION="a.b.c"
+. $BASH_INCLUDE/bash_utils.bash
 
-# TODO: UNCOMMENT: $THIS_DIR/build && $THIS_DIR/test || exit 1
+$THIS_DIR/build || exit_with_error_message "build failed"
+$THIS_DIR/test || exit_with_error_message "test failed"

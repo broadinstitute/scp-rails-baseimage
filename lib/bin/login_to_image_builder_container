@@ -1,5 +1,5 @@
 #!/bin/bash
 
-THIS_DIR="$(cd "$(dirname "$0")"; pwd)"
+THIS_DIR="$(cd "$(dirname "$BASH_SOURCE")"; pwd)"
 
 $THIS_DIR/run_in_image_builder_container "bash -l"

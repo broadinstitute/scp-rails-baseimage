@@ -1,0 +1,13 @@
+#!/bin/bash
+
+# USAGE: run with no arguments to undo the effects of running any other scripts in the same directory as this
+
+THIS_DIR="$(cd "$(dirname "$BASH_SOURCE")"; pwd)"
+BASE_DIR="$(dirname $THIS_DIR)"
+. $BASE_DIR/lib/bash_include/config.bash
+
+rm -rf $BASE_DIR/tmp
+IMAGES_TO_REMOVE="$(for IMAGE_NAME in $MAIN_IMAGE_FULLNAME $PHUSION_BASE_IMAGE_NAME $PHUSION_PASSENGER_IMAGE_NAME;do docker images --format '{{.Repository}}:{{.Tag}}' | grep $IMAGE_NAME; done)"
+if [ -n "$IMAGES_TO_REMOVE" ]; then
+    docker rmi $IMAGES_TO_REMOVE
+fi

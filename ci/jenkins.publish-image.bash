@@ -2,10 +2,10 @@
 
 # USAGE: Use without arguments in a jenkins test job to build and test the image. This keeps jenkins job config complexity low.
 
-THIS_DIR="$(cd "$(dirname "$0")"; pwd)"
+THIS_DIR="$(cd "$(dirname "$BASH_SOURCE")"; pwd)"
 BASE_DIR="$(dirname $THIS_DIR)"
 
-. $BASE_DIR/lib/bash_include/extract_vault_secrets.sh
+. $BASE_DIR/lib/bash_include/extract_vault_secrets.bash
 
 # TODO: what is the best practice for docker prune on jenkins nodes?
 
