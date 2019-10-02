@@ -5,14 +5,32 @@
 THIS_DIR="$(cd "$(dirname "$BASH_SOURCE")"; pwd)"
 BASE_DIR="$(dirname $THIS_DIR)"
 BASH_INCLUDE="$BASE_DIR/lib/bash_include"
-BIN="$BASE_DIR/lib/bin" # TODO: DELETE?
+BIN="$BASE_DIR/lib/bin"
 
 . $BASH_INCLUDE/config.bash
 . $BASH_INCLUDE/bash_utils.bash
 . $BASH_INCLUDE/dockerhub.bash
 
 function main {
-    test_for_unpublished_changes
+    test_serving_a_page
+
+    exit 0
+}
+
+function test_serving_a_page {
+    $BIN/build_test_image || { echo "ERROR: $(basename $0): FAILED to build test image" >&2; exit 1; }
+
+    TEST_CONTAINER_NAME="${TEST_IMAGE_NAME}_testing_container"
+    docker stop $TEST_CONTAINER_NAME 2>/dev/null
+    echo DEBUG: trying docker run...
+    docker run --rm -d \
+        --name "${TEST_CONTAINER_NAME}" \
+        -p 9980:80 \
+        $TEST_IMAGE_FULLNAME \
+    || exit_with_error_message "FAILED to run test image $MAIN_IMAGE_FULLNAME:candidate $(grep FROM Dockerfile|head -n 1)  (at $BASH_SOURCE:$LINENO)" &
+
+    curl -v localhost:9980/index.nginx-debian.html || { echo "ERROR ($?): FAILED to curl page from test container! (at $BASH_SOURCE:$LINENO)" >&2; exit 1; } #TODO: TEST (based on /var/) # TODO: container name, not localhost ;\
+
 }
 
 function test_for_unpublished_changes {

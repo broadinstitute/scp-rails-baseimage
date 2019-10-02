@@ -1,0 +1,16 @@
+#!/bin/bash
+
+THIS_DIR="$(cd "$(dirname "$BASH_SOURCE")"; pwd)"
+BASE_DIR="$(dirname $(dirname $THIS_DIR))"
+
+. $BASE_DIR/lib/bash_include/config.bash
+
+SOURCE_DIR="$BASE_DIR"
+
+cd $TEST_IMAGE_SOURCE_DIR || exit 1
+
+docker build -t "$TEST_IMAGE_FULLNAME:latest" --build-arg VCS_REF=$(git rev-parse HEAD) . || exit 1
+docker image ls | grep "\\b$TEST_IMAGE_FULLNAME\\b" | grep "\\blatest\\b" || exit 1
+
+echo;echo "Showing labels for \"$TEST_IMAGE_FULLNAME:latest\":"
+docker inspect --format '{{range $key, $val := .Config.Labels}}{{$key}}="{{$val}}"{{println}}{{end}}' "$TEST_IMAGE_FULLNAME:latest"

@@ -8,5 +8,5 @@ BASH_INCLUDE="$BASE_DIR/lib/bash_include"
 
 . $BASH_INCLUDE/bash_utils.bash
 
-$THIS_DIR/build || exit_with_error_message "build failed"
-$THIS_DIR/test || exit_with_error_message "test failed"
+$THIS_DIR/build || exit_with_error_message "build failed (at $BASH_SOURCE:$LINENO)"
+$THIS_DIR/test  || exit_with_error_message "test failed (at $BASH_SOURCE:$LINENO)"
