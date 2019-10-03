@@ -27,9 +27,13 @@ function test_serving_a_page {
         --name "${TEST_CONTAINER_NAME}" \
         -p 9980:80 \
         $TEST_IMAGE_FULLNAME \
-    || exit_with_error_message "FAILED to run test image $MAIN_IMAGE_FULLNAME:candidate $(grep FROM Dockerfile|head -n 1)  (at $BASH_SOURCE:$LINENO)" &
+    || exit_with_error_message "FAILED to run test image $MAIN_IMAGE_FULLNAME:candidate $(grep FROM Dockerfile|head -n 1)  (at $BASH_SOURCE:$LINENO)"
 
-    curl -v localhost:9980/index.nginx-debian.html || { echo "ERROR ($?): FAILED to curl page from test container! (at $BASH_SOURCE:$LINENO)" >&2; exit 1; } #TODO: TEST (based on /var/) # TODO: container name, not localhost ;\
+    echo sleeping for 30 seconds to allow the test containter to come up.... at $(date);sleep 30;echo done sleeping at $(date);echo "--------------------" & # TODO TODO: DELETE
+    curl -v 'http://localhost:9980/index.nginx-debian.html' || { echo "ERROR ($?): FAILED to curl page from test container! (at $BASH_SOURCE:$LINENO)" >&2; exit 1; } #TODO: TEST (based on /var/) # TODO: container name, not localhost ;\
+    echo DEBUG: it seems that curl worked.
+
+    docker stop $TEST_CONTAINER_NAME || { echo "ERROR: could not stop container \"$TEST_CONTAINER_NAME\"! (at $BASH_SOURCE:$LINENO)" >&2; exit 1; }
 
 }
 
