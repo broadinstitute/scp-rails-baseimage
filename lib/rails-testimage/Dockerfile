@@ -1,4 +1,4 @@
-FROM singlecellportal/rails-baseimage:latest
+FROM singlecellportal/rails-baseimage:candidate
 
 # Configure NGINX
 RUN rm /etc/nginx/sites-enabled/default
