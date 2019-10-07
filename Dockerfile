@@ -15,10 +15,17 @@ FROM singlecellportal/phusion_passenger-ruby25:1.0.6
 #FROM singlecellportal/phusion_passenger-nodejs:<VERSION>
 #FROM singlecellportal/phusion_passenger-customizable:<VERSION>
 
+# labeling the image clearly, following & extending the schema at: (TODO: shorten url)
+# https://github.com/opencontainers/image-spec/blob/da296dcb1e473a9b4e2d148941d7faa9ac8fea3f/annotations.md#back-compatibility-with-label-schema .
+# To see labels later, run: docker inspect singlecellportal/rails-baseimage:<version>
+
 ARG VCS_REF="unspecified"
-LABEL org.label-schema.vendor="Broad Institute" \
-      org.label-schema.vcs-url="https://github.com/broadinstitute/scp-rails-baseimage" \
-      org.label-schema.vcs-ref="$VCS_REF"
+ARG ORIGIN_STORY="unspecified"
+LABEL org.opencontainers.image.vendor="Broad Institute" \
+      org.opencontainers.image.vcs-url="https://github.com/broadinstitute/scp-rails-baseimage" \
+      org.opencontainers.image.vcs-ref="$VCS_REF" \
+      org.opencontainers.image.source="https://github.com/broadinstitute/scp-rails-baseimage/tree/$VCS_REF" \
+      org.opencontainers.image.description="An image used for the single cell portal, based on phusion passenger and rails. $ORIGIN_STORY"
 
 # Set correct environment variables.
 ENV HOME /root
