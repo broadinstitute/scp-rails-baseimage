@@ -8,7 +8,7 @@ export VAULT_ADDR
 export JENKINS_VAULT_TOKEN_PATH
 
 # load common utils
-. $BASE_DIR/lib/bash_include/bash_utils.sh || exit 1
+. $BASE_DIR/lib/bash_include/bash_utils.bash || exit 1
 
 function determine_export_filepath {
     echo "$BASE_DIR/tmp/secrets/$(determine_export_filename "$1" "$2" )"

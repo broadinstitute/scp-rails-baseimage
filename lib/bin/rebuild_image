@@ -10,5 +10,11 @@ cd $SOURCE_DIR || exit 1
 
 EXPECTED_FROM_IMAGE_PATTERN="$DOCKER_NAMESPACE/$PHUSION_PASSENGER_IMAGE_NAME.*:$PHUSION_PASSENGER_IMAGE_VERSION"
 grep "^FROM[[:space:]]*$EXPECTED_FROM_IMAGE_PATTERN[[:space:]]*\$" "$BASE_DIR/Dockerfile" || { echo "ERROR: $(basename $0): Dockerfile is not building from an image matching \"$EXPECTED_FROM_IMAGE_PATTERN\"." >&2; exit 1; }
-docker build -t "$MAIN_IMAGE_FULLNAME:latest" . || exit 1 # Don't tag with actual version numbers until the publish script, so you can build, attempt publish, change version.txt when it fails, and re-attempt publish without having to build again
+
+ORIGIN_STORY="This version of singlecellportal/rails-baseimage was built using $BASE_IMAGE as a base image, and rebuilding stlightly modified versions of the following images from source on top of that, before using it's own dockerfile: $PHUSION_BASE_IMAGE_REPO version $PHUSION_BASE_IMAGE_VERSION, $PHUSION_PASSENGER_IMAGE_REPO version $PHUSION_PASSENGER_IMAGE_VERSION."
+docker build -t "$MAIN_IMAGE_FULLNAME:latest" --build-arg VCS_REF=$(git rev-parse HEAD) --build-arg ORIGIN_STORY="$ORIGIN_STORY" . || exit 1 # Don't tag with actual version numbers until the publish script, so you can build, attempt publish, change version.txt when it fails, and re-attempt publish without having to build again
+
 docker image ls | grep "\\b$MAIN_IMAGE_FULLNAME\\b" | grep "\\blatest\\b" || exit 1
+
+echo;echo "Showing labels for \"$MAIN_IMAGE_FULLNAME:latest\":"
+docker inspect --format '{{range $key, $val := .Config.Labels}}{{$key}}="{{$val}}"{{println}}{{end}}' "$MAIN_IMAGE_FULLNAME:latest"

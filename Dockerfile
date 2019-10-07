@@ -15,6 +15,18 @@ FROM singlecellportal/phusion_passenger-ruby25:1.0.6
 #FROM singlecellportal/phusion_passenger-nodejs:<VERSION>
 #FROM singlecellportal/phusion_passenger-customizable:<VERSION>
 
+# labeling the image clearly, following & extending the schema at: (TODO: shorten url)
+# https://github.com/opencontainers/image-spec/blob/da296dcb1e473a9b4e2d148941d7faa9ac8fea3f/annotations.md#back-compatibility-with-label-schema .
+# To see labels later, run: docker inspect singlecellportal/rails-baseimage:<version>
+
+ARG VCS_REF="unspecified"
+ARG ORIGIN_STORY="unspecified"
+LABEL org.opencontainers.image.vendor="Broad Institute" \
+      org.opencontainers.image.vcs-url="https://github.com/broadinstitute/scp-rails-baseimage" \
+      org.opencontainers.image.vcs-ref="$VCS_REF" \
+      org.opencontainers.image.source="https://github.com/broadinstitute/scp-rails-baseimage/tree/$VCS_REF" \
+      org.opencontainers.image.description="An image used for the single cell portal, based on phusion passenger and rails. $ORIGIN_STORY"
+
 # Set correct environment variables.
 ENV HOME /root
 USER root
@@ -75,3 +87,6 @@ RUN openssl req -newkey rsa:4096 -days 365 -nodes -x509 \
 # Add Root CA and DHE key-exchange cert
 COPY ./GeoTrust_Universal_CA.pem /usr/local/share/ca-certificates
 COPY ./dhparam.pem /usr/local/share/ca-certificates
+
+RUN mkdir -p /etc/docker_image_creation_info
+COPY ./tmp/*state_report.txt /etc/docker_image_creation_info/

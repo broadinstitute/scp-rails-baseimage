@@ -29,3 +29,11 @@ function new_image_name_from_repo {
 function dir_name_from_repo {
     echo $1 | sed 's/\//_/'
 }
+
+function report_local_repository_state {
+    cd "$1" || exit_with_error_message "could not cd to $1"
+    echo "image was built from repository: $(git config --get remote.origin.url), commit $(git rev-parse HEAD), tag $(git tag --points-at HEAD)"
+    GIT_COMMAND_SHOW_LOCAL_CHANGES="git status -vv"
+    echo "...with the following local changes, as reported by \"$GIT_COMMAND_SHOW_LOCAL_CHANGES\": $(echo;$GIT_COMMAND_SHOW_LOCAL_CHANGES)"
+}
+
