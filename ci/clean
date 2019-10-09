@@ -11,3 +11,4 @@ IMAGES_TO_REMOVE="$(for IMAGE_NAME in $MAIN_IMAGE_FULLNAME $PHUSION_BASE_IMAGE_N
 if [ -n "$IMAGES_TO_REMOVE" ]; then
     docker rmi $IMAGES_TO_REMOVE
 fi
+docker system prune
