@@ -9,10 +9,6 @@ BASH_INCLUDE="$BASE_DIR/lib/bash_include"
 
 . $BASH_INCLUDE/bash_utils.bash
 
-echo "DEBUG: \$THIS_DIR is \"$THIS_DIR\" ( at $BASH_SOURCE:$LINENO )" >&2 # TODO: DELETE
-echo "DEBUG: \$BASE_DIR is \"$BASE_DIR\" ( at $BASH_SOURCE:$LINENO )" >&2 # TODO: DELETE
-echo "DEBUG: \$BASH_INCLUDE is \"$BASH_INCLUDE\" ( at $BASH_SOURCE:$LINENO )" >&2 # TODO: DELETE
-
 $THIS_DIR/clean || exit_with_error_message "clean failed (at $BASH_SOURCE:$LINENO)"
 $THIS_DIR/build || exit_with_error_message "build failed (at $BASH_SOURCE:$LINENO)"
 $THIS_DIR/test  || exit_with_error_message "test failed (at $BASH_SOURCE:$LINENO)"
