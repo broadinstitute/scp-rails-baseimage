@@ -4,6 +4,7 @@
 
 THIS_DIR="$(cd "$(dirname "$BASH_SOURCE")"; pwd)"
 BASE_DIR="$(dirname $THIS_DIR)"
+BIN="$BASE_DIR/lib/bin"
 . $BASE_DIR/lib/bash_include/config.bash
 
 $BIN/delete_test_image || { echo "ERROR: $(basename $0): FAILED to delete test image" >&2; exit 1; }
