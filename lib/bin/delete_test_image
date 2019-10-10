@@ -11,3 +11,5 @@ for image_to_remove in $TEST_IMAGE_FULLNAME $(docker images --filter "reference=
     docker rmi -f $image_to_remove
 done
 docker image ls | grep "\\b$TEST_IMAGE_FULLNAME\\b" && { echo "ERROR: $(basename $0): oops, found test image after supposedly deleting it" >&2; exit 1; }
+
+exit 0
