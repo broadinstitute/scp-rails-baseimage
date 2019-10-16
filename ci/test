@@ -45,10 +45,13 @@ function test_serving_a_page {
         echo "ERROR ($curl_exit_code): FAILED to curl page from test container! (at $BASH_SOURCE:$LINENO)" >&2
         exit 1
     fi
+
+    echo "HOORAY! The test container was able to serve a page."
+    return 0
 }
 
 function test_for_unpublished_changes {
-    docker_force_pull $MAIN_IMAGE_FULLNAME:latest || exit_with_error_message "could not pull fresh $MAIN_IMAGE_FULLNAME:latest from network"
+    docker_force_pull "$MAIN_IMAGE_FULLNAME:latest" || exit_with_error_message "could not pull fresh $MAIN_IMAGE_FULLNAME:latest from network (at $BASH_SOURCE:$LINENO)"
     latest_image_hash="$(get_docker_hash_for_image ${MAIN_IMAGE_FULLNAME}:latest)" || exit 1
     candidate_image_hash="$(get_docker_hash_for_image ${MAIN_IMAGE_FULLNAME}:candidate)" || exit 1
     if [ "$latest_image_hash" != "$candidate_image_hash" ]; then
@@ -59,10 +62,18 @@ function test_for_unpublished_changes {
 
 function docker_force_pull {
     local IMAGE="$1"
-    docker tag $IMAGE temp
-    docker rmi $IMAGE
-    docker pull $IMAGE
-    docker rmi temp
+
+    if docker inspect $IMAGE --format '.' >/dev/null 2>&1; then # if IMAGE exists
+        docker tag $IMAGE temp || { echo "ERROR: failed at $BASH_SOURCE:$LINENO" >&2; return 1; }
+        docker rmi $IMAGE || { echo "ERROR: failed at $BASH_SOURCE:$LINENO" >&2; return 1; }
+    fi
+
+    docker pull $IMAGE || { echo "ERROR: failed at $BASH_SOURCE:$LINENO" >&2; return 1; }
+
+    if docker inspect temp --format '.' >/dev/null 2>&1; then # if temp image exists
+        docker rmi temp || { echo "ERROR: failed at $BASH_SOURCE:$LINENO" >&2; return 1; }
+    fi
+    return 0
 }
 
 function get_docker_hash_for_image {
