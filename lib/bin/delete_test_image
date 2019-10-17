@@ -19,7 +19,7 @@ for image_to_remove in $TEST_IMAGE_FULLNAME $(docker images --filter "reference=
             fi
         done
 
-        docker rmi -f $image_to_remove
+        docker rmi -f $image_to_remove 2>/dev/null
 
         # for next loop, to see if the image is still there:
         image_hash_to_remove="$( docker inspect --format='{{.Id}}' $image_to_remove 2>/dev/null | sed 's/sha256://' )"
