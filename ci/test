@@ -28,6 +28,9 @@ function test_serving_a_page {
         $TEST_IMAGE_FULLNAME \
     || exit_with_error_message "FAILED to run test image $MAIN_IMAGE_FULLNAME:candidate $(grep FROM Dockerfile|head -n 1)  (at $BASH_SOURCE:$LINENO)"
 
+    sleep_for_at_least="5"
+    echo sleeping for $sleep_for_at_least seconds to allow the test container to come up.... at $(date);sleep $sleep_for_at_least;echo done sleeping at $(date);echo "--------------------"
+
     TEST_CONTAINER_IPADDR="$(docker inspect -f "{{.NetworkSettings.IPAddress }}" $TEST_CONTAINER_NAME)"
 
     curl_output="$(curl -v --connect-timeout 2 --retry 6 --retry-delay 3 "http://$TEST_CONTAINER_IPADDR/index.nginx-debian.html" 2>&1 )"; curl_exit_code="$?"
