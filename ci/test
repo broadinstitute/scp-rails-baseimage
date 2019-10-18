@@ -12,7 +12,7 @@ BIN="$BASE_DIR/lib/bin"
 . $BASH_INCLUDE/dockerhub.bash
 
 function main {
-    test_serving_a_page
+    test_serving_a_page || { echo "ERROR: something went wrong with the page-serving test of the image."; exit 1; }
     test_for_unpublished_changes
     exit 0
 }
@@ -35,19 +35,20 @@ function test_serving_a_page {
 
     curl_output="$(curl -v --connect-timeout 2 --retry 6 --retry-delay 3 "http://$TEST_CONTAINER_IPADDR/index.nginx-debian.html" 2>&1 )"; curl_exit_code="$?"
 
-    docker stop $TEST_CONTAINER_NAME || { echo "ERROR: could not stop container \"$TEST_CONTAINER_NAME\"! (at $BASH_SOURCE:$LINENO)" >&2; exit 1; }
+    return_code=0
+    docker stop $TEST_CONTAINER_NAME || { echo "ERROR: could not stop container \"$TEST_CONTAINER_NAME\"! (at $BASH_SOURCE:$LINENO)" >&2; return_code=1; }
     $BIN/delete_test_image || { echo "ERROR: $(basename $0): FAILED to delete test image" >&2; exit 1; }
 
     if [ "$curl_exit_code" -eq 0 ];then
         echo "curl succeeded!" >&2
     else
-        echo "$curl_output"| tail -n 3 >&2 # TODO: limit output
+        echo "$curl_output"| tail -n 3 >&2
         echo "ERROR ($curl_exit_code): FAILED to curl page from test container! (at $BASH_SOURCE:$LINENO)" >&2
         exit 1
     fi
 
     echo "HOORAY! The test container was able to serve a page."
-    return 0
+    return $return_code
 }
 
 function test_for_unpublished_changes {
