@@ -5,9 +5,14 @@
 # than this.
 
 THIS_DIR="$(cd "$(dirname "$BASH_SOURCE")"; pwd)"
+BASE_DIR="$(dirname $(dirname $THIS_DIR))"
+BASH_INCLUDE="$BASE_DIR/lib/bash_include"
 THIS_SCRIPT_NAME="$(basename $0)"
 THIS_SCRIPT_ABSOLUTE_PATH="$THIS_DIR/$THIS_SCRIPT_NAME"
-REAL_DOCKER="$(which -a $THIS_SCRIPT_NAME | grep -v "^$THIS_SCRIPT_ABSOLUTE_PATH$" | head -n 1| grep docker)" || { echo "ERROR: could not find a real docker binary" >&2; exit 1; }
+
+. $BASH_INCLUDE/bash_utils.bash
+
+REAL_DOCKER="$(which -a $THIS_SCRIPT_NAME | grep -v "^$THIS_SCRIPT_ABSOLUTE_PATH$" | head -n 1| grep docker)" || exit_with_error_message "Could not find a real docker binary"
 ARGS_ARRAY=("$@")
 for ((i=0;i<"${#ARGS_ARRAY[@]}";++i)); do
     # --platform needs docker daemon to run in experimental mode, and we don't need it anyway

@@ -12,13 +12,13 @@ BIN="$BASE_DIR/lib/bin"
 . $BASH_INCLUDE/dockerhub.bash
 
 function main {
-    test_serving_a_page || { echo "ERROR: something went wrong with the page-serving test of the image."; exit 1; }
-    test_for_unpublished_changes
+    test_serving_a_page || exit_with_error_message "Something went wrong with the page-serving test of the image."
+    test_for_unpublished_changes || exit 1
     exit 0
 }
 
 function test_serving_a_page {
-    $BIN/build_test_image || { echo "ERROR: $(basename $0): FAILED to build test image" >&2; exit 1; }
+    $BIN/build_test_image || exit_with_error_message "FAILED to build test image"
 
     TEST_CONTAINER_NAME="${TEST_IMAGE_NAME}_container"
     docker stop $TEST_CONTAINER_NAME 2>/dev/null
@@ -26,7 +26,7 @@ function test_serving_a_page {
     docker run --rm -d \
         --name "${TEST_CONTAINER_NAME}" \
         $TEST_IMAGE_FULLNAME \
-    || exit_with_error_message "FAILED to run test image $MAIN_IMAGE_FULLNAME:candidate $(grep FROM Dockerfile|head -n 1)  (at $BASH_SOURCE:$LINENO)"
+    || exit_with_error_message "FAILED to run test image $MAIN_IMAGE_FULLNAME:candidate $(grep FROM Dockerfile|head -n 1)"
 
     seconds_to_wait_for_boot="5"
     echo sleeping for $seconds_to_wait_for_boot seconds to allow the test container to come up.... at $(date);sleep $seconds_to_wait_for_boot;echo done sleeping at $(date);echo "--------------------"
@@ -37,14 +37,13 @@ function test_serving_a_page {
 
     return_code=0
     docker stop $TEST_CONTAINER_NAME || { echo "ERROR: could not stop container \"$TEST_CONTAINER_NAME\"! (at $BASH_SOURCE:$LINENO)" >&2; return_code=1; }
-    $BIN/delete_test_image || { echo "ERROR: $(basename $0): FAILED to delete test image" >&2; exit 1; }
+    $BIN/delete_test_image || exit_with_error_message "FAILED to delete test image"
 
     if [ "$curl_exit_code" -eq 0 ];then
         echo "curl succeeded!" >&2
     else
         echo "$curl_output"| tail -n 3 >&2
-        echo "ERROR ($curl_exit_code): FAILED to curl page from test container! (at $BASH_SOURCE:$LINENO)" >&2
-        exit 1
+        exit_with_error_message "FAILED to curl page from test container! curl returned $curl_exit_code. (at $BASH_SOURCE:$LINENO)"
     fi
 
     echo "HOORAY! The test container was able to serve a page."
@@ -52,7 +51,7 @@ function test_serving_a_page {
 }
 
 function test_for_unpublished_changes {
-    docker_force_pull "$MAIN_IMAGE_FULLNAME:latest" || exit_with_error_message "could not pull fresh $MAIN_IMAGE_FULLNAME:latest from network (at $BASH_SOURCE:$LINENO)"
+    docker_force_pull "$MAIN_IMAGE_FULLNAME:latest" || exit_with_error_message "Could not pull fresh $MAIN_IMAGE_FULLNAME:latest from network"
     latest_image_hash="$(get_docker_hash_for_image ${MAIN_IMAGE_FULLNAME}:latest)" || exit 1
     candidate_image_hash="$(get_docker_hash_for_image ${MAIN_IMAGE_FULLNAME}:candidate)" || exit 1
     if [ "$latest_image_hash" != "$candidate_image_hash" ]; then
@@ -65,14 +64,14 @@ function docker_force_pull {
     local IMAGE="$1"
 
     if docker inspect $IMAGE --format '.' >/dev/null 2>&1; then # if IMAGE exists
-        docker tag $IMAGE temp || { echo "ERROR: failed at $BASH_SOURCE:$LINENO" >&2; return 1; }
-        docker rmi $IMAGE || { echo "ERROR: failed at $BASH_SOURCE:$LINENO" >&2; return 1; }
+        docker tag $IMAGE temp || { echo "ERROR: FAILED at $BASH_SOURCE:$LINENO" >&2; return 1; }
+        docker rmi $IMAGE || { echo "ERROR: FAILED at $BASH_SOURCE:$LINENO" >&2; return 1; }
     fi
 
-    docker pull $IMAGE || { echo "ERROR: failed at $BASH_SOURCE:$LINENO" >&2; return 1; }
+    docker pull $IMAGE || { echo "ERROR: FAILED at $BASH_SOURCE:$LINENO" >&2; return 1; }
 
     if docker inspect temp --format '.' >/dev/null 2>&1; then # if temp image exists
-        docker rmi temp || { echo "ERROR: failed at $BASH_SOURCE:$LINENO" >&2; return 1; }
+        docker rmi temp || { echo "ERROR: FAILED at $BASH_SOURCE:$LINENO" >&2; return 1; }
     fi
     return 0
 }

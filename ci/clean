@@ -5,9 +5,11 @@
 THIS_DIR="$(cd "$(dirname "$BASH_SOURCE")"; pwd)"
 BASE_DIR="$(dirname $THIS_DIR)"
 BIN="$BASE_DIR/lib/bin"
-. $BASE_DIR/lib/bash_include/config.bash
+BASH_INCLUDE="$BASE_DIR/lib/bash_include"
 
-$BIN/delete_test_image || { echo "ERROR: $(basename $0): FAILED to delete test image" >&2; exit 1; }
+. $BASH_INCLUDE/config.bash
+
+$BIN/delete_test_image || exit_with_error_message "FAILED to delete test image"
 rm -rf $BASE_DIR/tmp
 IMAGES_TO_REMOVE="$(for IMAGE_NAME in $MAIN_IMAGE_FULLNAME $PHUSION_BASE_IMAGE_NAME $PHUSION_PASSENGER_IMAGE_NAME;do docker images --format '{{.Repository}}:{{.Tag}}' | grep $IMAGE_NAME; done)"
 if [ -n "$IMAGES_TO_REMOVE" ]; then

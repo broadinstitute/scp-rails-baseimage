@@ -9,7 +9,8 @@ apt-get install $APT_INSTALL_FLAGS \
     curl \
     gnupg-agent \
     software-properties-common \
-    make && \
+    make \
+    jq && \
 curl -fsSL https://download.docker.com/linux/ubuntu/gpg | apt-key add - && \
 add-apt-repository \
    "deb [arch=amd64] https://download.docker.com/linux/ubuntu \
@@ -17,7 +18,7 @@ add-apt-repository \
    stable" && \
 apt-get update && \
 apt-get install $APT_INSTALL_FLAGS docker-ce docker-ce-cli containerd.io || \
-{ echo "ERROR: failed to install make and/or docker" >&2; exit 1; }
+{ echo "ERROR: FAILED to install make and/or docker" >&2; exit 1; }
 
 # BELOW here is stuff that's only necessary if you're running the whole build in the image builder container, as opposed to just the passenger phusion images
 RUN apt-get install $APT_INSTALL_FLAGS git

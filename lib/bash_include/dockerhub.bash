@@ -1,6 +1,5 @@
 if ! [ -d "$BASE_DIR" ]; then
-    echo "ERROR: $(basename $BASH_SOURCE): \$BASE_DIR should already be defined before this was included at $BASH_SOURCE[1]" >&2
-    exit 1
+    exit_with_error_message "\$BASE_DIR should already be defined before this was included at ${BASH_SOURCE[1]}:${BASH_LINENO}"
 fi
 
 . "$BASE_DIR/lib/bash_include/config.bash"
@@ -8,7 +7,7 @@ fi
 # making sure publish fails if version.txt has not been updated to avoid re-using the version tag:
 function assert_main_version_unused {
     if main_version_already_published; then
-        exit_with_error_message "version $MAIN_VERSION has already been published. Please edit version.txt according to semver and try again." >&2
+        exit_with_error_message "Version $MAIN_VERSION has already been published. Please edit version.txt according to semver and try again." >&2
     fi
 }
 
@@ -22,13 +21,18 @@ function docker_image_has_been_published {
     local IMAGE_SCOPED_NAME="$2"
     local TAG="$3"
 
-    if docker_image_has_been_published_unsafe "$REGISTRY" "$IMAGE_SCOPED_NAME" "latest"; then
-        docker_image_has_been_published_unsafe "$REGISTRY" "$IMAGE_SCOPED_NAME" "$TAG"
-    else
-        echo "ERROR: $(basename $0): cannot confirm what has previously published."
-        exit 1
-    fi
-
+    max_attempts=3
+    attempt_number=1
+    until docker_image_has_been_published_unsafe "$REGISTRY" "$IMAGE_SCOPED_NAME" "latest"; do
+        if [ "$attempt_number" -gt "$max_attempts" ]; then
+            exit_with_error_message "FAILED to verify that image \"$IMAGE_SCOPED_NAME:latest\" has been previously published, which probably just means we cannot reach the registry ( $REGISTRY/ )."
+        else
+            echo "It seems like we cannot reach the docker registry right now (attempt $attempt_number), will try again shortly..."
+            sleep 5
+        fi
+        attempt_number="$(($attempt_number + 1))"
+    done
+    docker_image_has_been_published_unsafe "$REGISTRY" "$IMAGE_SCOPED_NAME" "$TAG" #un-explicitly sets the return value
 }
 
 function docker_image_has_been_published_unsafe {
@@ -38,7 +42,7 @@ function docker_image_has_been_published_unsafe {
 
     TAG_TEST_URL="https://$REGISTRY/v2/repositories/$IMAGE_SCOPED_NAME/tags/$TAG/"
     HTTP_CODE="$(curl -X "HEAD" -L -s -w "%{http_code}" "$TAG_TEST_URL" -m 2 )"
-    [ "200" == "$HTTP_CODE" ]
+    [ "200" == "$HTTP_CODE" ] # no explicit return or if statement needed
 }
 
 

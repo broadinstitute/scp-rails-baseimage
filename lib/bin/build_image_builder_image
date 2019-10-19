@@ -11,4 +11,5 @@ IMAGE_BUILDER_SOURCE_DIR="$BASE_DIR/lib/$IMAGE_NAME"
 
 cd "$IMAGE_BUILDER_SOURCE_DIR" || exit 1
 docker build -t "$IMAGE_FULLNAME" . || exit 1
+
 docker image ls | grep "\\b$IMAGE_FULLNAME\\b" | grep "\\blatest\\b" || exit 1

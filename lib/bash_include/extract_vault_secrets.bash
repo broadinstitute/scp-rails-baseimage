@@ -7,8 +7,7 @@ DOCKER_IMAGE_FOR_VAULT_CLIENT='vault:1.1.3'
 export VAULT_ADDR
 export JENKINS_VAULT_TOKEN_PATH
 
-# load common utils
-. $BASE_DIR/lib/bash_include/bash_utils.bash || exit 1
+. $BASE_DIR/lib/bash_include/bash_utils.bash || exit 1 # load common utils
 
 function determine_export_filepath {
     echo "$BASE_DIR/tmp/secrets/$(determine_export_filename "$1" "$2" )"
@@ -22,7 +21,7 @@ function determine_export_filename {
     if [[ -n "$REQUESTED_EXTENSION" ]]; then
         # replace existing extension with requested extension (like .env for non-JSON secrets)
         EXPORT_EXTENSION="$(set_pathname_extension $FILENAME)"
-        FILENAME="${FILENAME//$EXPORT_EXTENSION/$REQUESTED_EXTENSION}" || exit_with_error_message "could not change export filename extension to $REQUESTED_EXTENSION from $EXPORT_EXTENSION"
+        FILENAME="${FILENAME//$EXPORT_EXTENSION/$REQUESTED_EXTENSION}" || exit_with_error_message "Could not change export filename extension to $REQUESTED_EXTENSION from $EXPORT_EXTENSION"
     fi
     echo "$FILENAME"
 }
@@ -34,15 +33,15 @@ function extract_vault_secrets_as_env_file {
     SECRET_EXPORT_FILEPATH="$(determine_export_filepath $VAULT_SECRET_PATH bash)" || exit 1
     # load raw secrets from vault
     echo "extracting vault secrets from $VAULT_SECRET_PATH"
-    VALS=$(load_secrets_from_vault $VAULT_SECRET_PATH) || exit_with_error_message "could not read secrets from $VAULT_SECRET_PATH"
+    VALS=$(load_secrets_from_vault $VAULT_SECRET_PATH) || exit_with_error_message "Could not read secrets from $VAULT_SECRET_PATH"
 
     mkdir -p "$(dirname "$SECRET_EXPORT_FILEPATH" )" || exit 1
-    echo "### env secrets from $VAULT_SECRET_PATH ###" >| $SECRET_EXPORT_FILEPATH || exit_with_error_message "could not initialize $SECRET_EXPORT_FILEPATH"
+    echo "### env secrets from $VAULT_SECRET_PATH ###" >| $SECRET_EXPORT_FILEPATH || exit_with_error_message "Could not initialize $SECRET_EXPORT_FILEPATH"
     # for each key in the secrets config, export the value
     for key in $(echo $VALS | jq .data | jq --raw-output 'keys[]')
     do
         echo "setting value for: $key"
-        curr_val=$(echo $VALS | jq .data | jq --raw-output .$key) || exit_with_error_message "could not extract value for $key from $VAULT_SECRET_PATH"
+        curr_val=$(echo $VALS | jq .data | jq --raw-output .$key) || exit_with_error_message "Could not extract value for $key from $VAULT_SECRET_PATH"
         echo "export $key='$curr_val'" >> $SECRET_EXPORT_FILEPATH
     done
     unset VALS key
@@ -66,6 +65,6 @@ function load_secrets_from_vault {
         -e VAULT_AUTH_NATIVE_TOKEN \
         -e VAULT_ADDR \
         $DOCKER_IMAGE_FOR_VAULT_CLIENT \
-        sh -lc "vault login $(get_authentication_method) && vault read -format json $SECRET_PATH_IN_VAULT" || exit_with_error_message "could not read $SECRET_PATH_IN_VAULT"
+        sh -lc "vault login $(get_authentication_method) && vault read -format json $SECRET_PATH_IN_VAULT" || exit_with_error_message "Could not read $SECRET_PATH_IN_VAULT"
 }
 

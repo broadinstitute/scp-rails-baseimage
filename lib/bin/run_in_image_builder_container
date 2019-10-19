@@ -21,7 +21,8 @@ docker run --name image_builder_container \
     $DOCKER_RUN_FLAGS \
     -v $PWD:$DOCKER_MAP_DIR \
     -v /var/run/docker.sock:/var/run/docker.sock \
+    -v $HOME/.github-token-for-vault:/root/.github-token-for-vault \
     -a stdout -a stderr \
     "$IMAGE_BUILDER_IMAGE" \
     sh -lc "cd $DOCKER_MAP_DIR; $RUN_THIS_COMMAND" \
-    || { docker_exit_value="$?"; echo "ERROR: $(basename $0): running \"$RUN_THIS_COMMAND\" FAILED in image builder container, docker run failed with $docker_exit_value" >&2; exit 1; }
+    || { docker_exit_value="$?"; exit_with_error_message "Running \"$RUN_THIS_COMMAND\" FAILED in image builder container, docker run FAILED with $docker_exit_value"; }

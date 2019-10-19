@@ -5,12 +5,14 @@
 THIS_DIR="$(cd "$(dirname "$BASH_SOURCE")"; pwd)"
 BASE_DIR="$(dirname $THIS_DIR)"
 BIN="$BASE_DIR/lib/bin"
+BASH_INCLUDE="$BASE_DIR/lib/bash_include"
+
+. $BASH_INCLUDE/bash_utils.bash
 
 function main {
-    # maybe loop through each of these 3 or 4 rebuild scripts and echo that we're starting , run command, echo error message or finished message
-    $BIN/rebuild_phusion_baseimage || { echo "ERROR: $(basename $0): FAILED to rebuild phusion base image" >&2; exit 1; }
-    $BIN/rebuild_phusion_passenger_image || { echo "ERROR: $(basename $0): FAILED to rebuild phusion passenger image" >&2; exit 1; }
-    $BIN/rebuild_image || { echo "ERROR: $(basename $0): FAILED to build docker image" >&2; exit 1; }
+    $BIN/rebuild_phusion_baseimage || exit_with_error_message "FAILED to rebuild phusion base image"
+    $BIN/rebuild_phusion_passenger_image || exit_with_error_message "FAILED to rebuild phusion passenger image"
+    $BIN/rebuild_image || exit_with_error_message "FAILED to build docker image"
 }
 
 main "$@"
