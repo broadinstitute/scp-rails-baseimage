@@ -7,7 +7,7 @@ BASE_DIR="$(dirname $(dirname $THIS_DIR))"
 
 RUN_THIS_COMMAND="$1"
 
-export DOCKER_MAP_DIR="/mnt/working"
+export DOCKER_MAP_DIR="/mnt/$(basename $BASE_DIR)_mapped"
 
 RUN_THIS_COMMAND="$(echo $RUN_THIS_COMMAND | sed "s~$PWD~$DOCKER_MAP_DIR~g" )"
 
