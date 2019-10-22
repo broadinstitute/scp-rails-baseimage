@@ -22,7 +22,6 @@ function test_serving_a_page {
 
     TEST_CONTAINER_NAME="${TEST_IMAGE_NAME}_container"
     docker stop $TEST_CONTAINER_NAME 2>/dev/null
-    echo DEBUG: trying docker run...
     docker run --rm -d \
         --name "${TEST_CONTAINER_NAME}" \
         $TEST_IMAGE_FULLNAME \

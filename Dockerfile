@@ -15,8 +15,7 @@ FROM singlecellportal/phusion_passenger-ruby25:1.0.8
 #FROM singlecellportal/phusion_passenger-nodejs:<VERSION>
 #FROM singlecellportal/phusion_passenger-customizable:<VERSION>
 
-# labeling the image clearly, following & extending the schema at: (TODO: shorten url)
-# https://github.com/opencontainers/image-spec/blob/da296dcb1e473a9b4e2d148941d7faa9ac8fea3f/annotations.md#back-compatibility-with-label-schema .
+# Labeling the image clearly, following & extending the schema at https://bit.ly/2pJmHyS :
 # To see labels later, run: docker inspect singlecellportal/rails-baseimage:<version>
 ARG VCS_REF="unspecified"
 ARG ORIGIN_STORY="unspecified"
