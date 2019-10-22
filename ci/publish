@@ -9,9 +9,6 @@ BASH_INCLUDE="$BASE_DIR/lib/bash_include"
 . $BASH_INCLUDE/config.bash
 . $BASH_INCLUDE/dockerhub.bash
 
-# TODO: should this fail if you try to run it locally instead of from jenkins? at least if you don't pass -f/--force? maybe we should bake username/hostname into the image for traceability instead?
-# TODO: publish version 1.0.
-
 function main {
     assert_main_version_unused
 
