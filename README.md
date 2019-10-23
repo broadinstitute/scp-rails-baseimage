@@ -39,14 +39,14 @@ To publish your changes, you'll need to increment the version number in `./versi
     * ( TODO ) configure jenkins jobs with final email addresses and branches
 * ( TODO ) automatically publish git tags for published versions
 * ( TODO ) publish version 1.0.
+* ( TODO ) jenkins/github integration
 * ( TODO ) document or add optional flags to do local testing faster (I have a hack or two that's not comitted yet)
 * ( TODO ) does/can/should ci/test work when not run in the image builder container?
 * ( TODO ) automatically keep track of new releases to underlying layers to help us keep this image up to date.
     * ( TODO ) a test job should watch for changes and "fail" if there are new changes that need to be incorporated
         * ( TODO ) for the google-maintained base image, which is spec'ed to latest:
-            * ( TODO ) is phusion really already using the google image? Do we care?
             * ( TODO ) force pull the "latest" image, so you can't possibly get confused by something stale?
             * ( done ) complain if there are new changes that need to be published without a new version number
-        * ( done ) for the phusion-maintained source code that creates the intermediate images (which are pinned to specific versions):
-            * ( done ) check for more recent release tags, fail if any found
+        * ( TODO ) for the phusion-maintained source code that creates the intermediate images (which are pinned to specific versions):
+            * ( TODO ) check for more recent release tags, fail if any found
 * ( done ) add a "clean" script that removes tmp, maybe clears out some docker images, too?

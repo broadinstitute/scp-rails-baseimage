@@ -8,7 +8,6 @@ BIN="$BASE_DIR/lib/bin"
 BASH_INCLUDE="$BASE_DIR/lib/bash_include"
 
 . $BASH_INCLUDE/bash_utils.bash
-. $BASH_INCLUDE/dockerhub.bash
 
 function main {
     $BIN/rebuild_phusion_baseimage || exit_with_error_message "FAILED to rebuild phusion base image"
