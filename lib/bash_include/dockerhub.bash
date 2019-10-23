@@ -7,7 +7,7 @@ fi
 # making sure publish fails if version.txt has not been updated to avoid re-using the version tag:
 function assert_main_version_unused {
     if main_version_already_published; then
-        exit_with_error_message "Version $MAIN_VERSION has already been published. Please edit version.txt according to semver and try again." >&2
+        exit_with_error_message "Version $MAIN_VERSION has already been published, and refers to a different image. Please edit version.txt according to semver and try again."
     fi
 }
 
@@ -45,4 +45,19 @@ function docker_image_has_been_published_unsafe {
     [ "200" == "$HTTP_CODE" ] # no explicit return or if statement needed
 }
 
+function docker_force_pull {
+    local IMAGE="$1"
+
+    if docker inspect $IMAGE --format '.' >/dev/null 2>&1; then # if IMAGE exists
+        docker tag $IMAGE temp || { echo "ERROR: FAILED at $BASH_SOURCE:$LINENO" >&2; return 1; }
+        docker rmi $IMAGE || { echo "ERROR: FAILED at $BASH_SOURCE:$LINENO" >&2; return 1; }
+    fi
+
+    docker pull $IMAGE || { echo "ERROR: FAILED at $BASH_SOURCE:$LINENO" >&2; return 1; }
+
+    if docker inspect temp --format '.' >/dev/null 2>&1; then # if temp image exists
+        docker rmi temp || { echo "ERROR: FAILED at $BASH_SOURCE:$LINENO" >&2; return 1; }
+    fi
+    return 0
+}
 

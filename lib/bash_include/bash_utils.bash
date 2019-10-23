@@ -12,7 +12,7 @@ function exit_with_error_message {
     exit 1
 }
 
-function set_pathname_extension {
+function get_file_extension_from_path {
     FULL_PATH="$1"
     SEP="."
     echo ${FULL_PATH##*$SEP} || exit_with_error_message "Could not extract file extension from $FULL_PATH"

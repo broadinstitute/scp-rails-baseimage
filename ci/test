@@ -54,25 +54,10 @@ function test_for_unpublished_changes {
     latest_image_hash="$(get_docker_hash_for_image ${MAIN_IMAGE_FULLNAME}:latest)" || exit 1
     candidate_image_hash="$(get_docker_hash_for_image ${MAIN_IMAGE_FULLNAME}:candidate)" || exit 1
     if [ "$latest_image_hash" != "$candidate_image_hash" ]; then
+        echo "We have built an image with hash \"$candidate_image_hash\" as ${MAIN_IMAGE_FULLNAME}:latest, whereas the official ${MAIN_IMAGE_FULLNAME}:latest has a hash of \"$latest_image_hash\"." >&2
         assert_main_version_unused
     fi
 
-}
-
-function docker_force_pull {
-    local IMAGE="$1"
-
-    if docker inspect $IMAGE --format '.' >/dev/null 2>&1; then # if IMAGE exists
-        docker tag $IMAGE temp || { echo "ERROR: FAILED at $BASH_SOURCE:$LINENO" >&2; return 1; }
-        docker rmi $IMAGE || { echo "ERROR: FAILED at $BASH_SOURCE:$LINENO" >&2; return 1; }
-    fi
-
-    docker pull $IMAGE || { echo "ERROR: FAILED at $BASH_SOURCE:$LINENO" >&2; return 1; }
-
-    if docker inspect temp --format '.' >/dev/null 2>&1; then # if temp image exists
-        docker rmi temp || { echo "ERROR: FAILED at $BASH_SOURCE:$LINENO" >&2; return 1; }
-    fi
-    return 0
 }
 
 function get_docker_hash_for_image {
