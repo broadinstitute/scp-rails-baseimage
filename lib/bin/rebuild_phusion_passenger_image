@@ -13,16 +13,21 @@ IMAGE_FULLNAME="$DOCKER_NAMESPACE/$PHUSION_PASSENGER_IMAGE_NAME"
 github_checkout "$PHUSION_PASSENGER_IMAGE_REPO" "$PHUSION_PASSENGER_IMAGE_SOURCE_DIR" "$PHUSION_PASSENGER_IMAGE_REPO_RELEASE_TAG" || exit 1
 cd "$PHUSION_PASSENGER_IMAGE_SOURCE_DIR" || exit 1
 
-export PATH="$BASE_DIR/lib/docker_shim:$PATH" # use a docker shim to filter out arguments we don't like # TODO: DELETE after fast test cycles are not needed
+# TODO: get working on jenkins: latest_git_tag="$(git --no-pager tag --sort=committerdate | tail -n 1)"
+# TODO: get working on jenkins: if [ "$latest_git_tag" != "$PHUSION_PASSENGER_IMAGE_REPO_RELEASE_TAG" ]; then
+# TODO: get working on jenkins:     exit_with_error_message "This is not the latest released version of the phusion passenger image--use $latest_git_tag."
+# TODO: get working on jenkins: fi
+
+export PATH="$BASE_DIR/lib/docker_shim:$PATH" # use a docker shim to filter out arguments we don't like
 
 DOCKER_FILE="./image/Dockerfile"
 sed -i "s~^FROM[[:space:]].\{1,\}$~FROM $DOCKER_NAMESPACE/phusion_baseimage:$PHUSION_BASE_IMAGE_VERSION~" $DOCKER_FILE
 
 MAKE_TARGET=build_ruby25
-MAKE_OUTPUT="$(make $MAKE_TARGET NAME="$IMAGE_FULLNAME")" || exit 1
+MAKE_OUTPUT="$(make $MAKE_TARGET NAME="$IMAGE_FULLNAME")" || exit_with_error_message "make build FAILED" # build
 echo "$MAKE_OUTPUT"
 
-TAG_REPORT="$(echo "$MAKE_OUTPUT" | grep "^Successfully tagged $IMAGE_FULLNAME.*:$PHUSION_PASSENGER_IMAGE_VERSION\$")" || { echo ERROR: $(basename $0): image not tagged as expected; exit 1; }
+TAG_REPORT="$(echo "$MAKE_OUTPUT" | grep "^Successfully tagged $IMAGE_FULLNAME.*:$PHUSION_PASSENGER_IMAGE_VERSION\$")" || exit_with_error_message "Image not tagged as expected"
 
 echo $TAG_REPORT > "$PHUSION_PASSENGER_IMAGE_SOURCE_STATE_REPORT"
 report_local_repository_state "$PHUSION_PASSENGER_IMAGE_SOURCE_DIR" >> "$PHUSION_PASSENGER_IMAGE_SOURCE_STATE_REPORT"

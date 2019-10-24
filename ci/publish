@@ -2,54 +2,23 @@
 
 # USAGE: run this with no argumants to publish the image that was built. Or better yet, don't run this, and let the jenkins job take care of it.
 
-THIS_DIR="$(cd "$(dirname "$0")"; pwd)"
+THIS_DIR="$(cd "$(dirname "$BASH_SOURCE")"; pwd)"
 BASE_DIR="$(dirname $THIS_DIR)"
+BASH_INCLUDE="$BASE_DIR/lib/bash_include"
 
-. $BASE_DIR/lib/bash_include/config.bash
-
-# TODO: should this fail if you try to run it locally instead of from jenkins? at least if you don't pass -f/--force? maybe we should bake username/hostname into the image for traceability instead?
-# TODO: publish version 1.0.
+. $BASH_INCLUDE/config.bash
+. $BASH_INCLUDE/dockerhub.bash
 
 function main {
-    version=$(cat $BASE_DIR/version.txt)
+    assert_main_version_unused
 
-    if docker_image_has_been_published "hub.docker.com" "$MAIN_IMAGE_FULLNAME" "$version" ; then
-        echo "ERROR: $(basename $0): version $version has already been published. Please edit version.txt according to semver and try again." >&2
-        exit 1
-    else
-        docker tag "$MAIN_IMAGE_FULLNAME:latest" "$MAIN_IMAGE_FULLNAME:$version" || { echo "ERROR: $(basename $0): failed to tag $MAIN_IMAGE_NAME with $version ">&2; exit 1; }
-        docker image ls | grep "\\b$MAIN_IMAGE_FULLNAME\\b" | grep "\\b$version\\b" || exit 1 #confirm taggging worked
-        docker push "$MAIN_IMAGE_FULLNAME:latest" || { echo "ERROR: $(basename $0): failed to push $MAIN_IMAGE_NAME:latest ">&2; exit 1; }
-        docker push "$MAIN_IMAGE_FULLNAME:$version" || { echo "ERROR: $(basename $0): failed to push $MAIN_IMAGE_FULLNAME:$version ">&2; exit 1; }
-        echo published $MAIN_IMAGE_FULLNAME:$version
+    for PUBLISH_VERSION in "$MAIN_VERSION" "latest";do
+        docker tag "$MAIN_IMAGE_FULLNAME:candidate" "$MAIN_IMAGE_FULLNAME:$PUBLISH_VERSION" || exit_with_error_message "FAILED to tag $MAIN_IMAGE_NAME with $PUBLISH_VERSION "
+        docker image ls | grep "\\b$MAIN_IMAGE_FULLNAME\\b" | grep "\\b$PUBLISH_VERSION\\b" || exit 1 #confirm taggging worked
+        docker push "$MAIN_IMAGE_FULLNAME:$PUBLISH_VERSION" || exit_with_error_message "FAILED to push $MAIN_IMAGE_FULLNAME:$PUBLISH_VERSION " # TODO: check if it FAILED because of docker login being needed
+        echo "Published $MAIN_IMAGE_FULLNAME:$PUBLISH_VERSION -- see it at https://cloud.docker.com/u/singlecellportal/repository/docker/$MAIN_IMAGE_FULLNAME"
+    done
 
-    fi
-}
-
-# making sure publish fails if version.txt has not been updated to avoid re-using the version tag:
-function docker_image_has_been_published {
-
-    local REGISTRY="$1"
-    local IMAGE_SCOPED_NAME="$2"
-    local TAG="$3"
-
-    if docker_image_has_been_published_unsafe "$REGISTRY" "$IMAGE_SCOPED_NAME" "latest"; then
-        docker_image_has_been_published_unsafe "$REGISTRY" "$IMAGE_SCOPED_NAME" "$TAG"
-    else
-        echo "ERROR: $(basename $0): cannot confirm what has previously published."
-        exit 1
-    fi
-
-}
-
-function docker_image_has_been_published_unsafe {
-    local REGISTRY="$1"
-    local IMAGE_SCOPED_NAME="$2"
-    local TAG="$3"
-
-    TAG_TEST_URL="https://$REGISTRY/v2/repositories/$IMAGE_SCOPED_NAME/tags/$TAG/"
-    HTTP_CODE="$(curl -X "HEAD" -L -s -w "%{http_code}" "$TAG_TEST_URL" -m 2 )"
-    [ "200" == "$HTTP_CODE" ]
 }
 
 main "$@"

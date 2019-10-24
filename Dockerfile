@@ -3,8 +3,8 @@
 # See https://github.com/phusion/passenger-docker/blob/master/Changelog.md for
 # a list of version numbers.
 
-FROM singlecellportal/phusion_passenger-ruby25:1.0.6
-#FROM singlecellportal/phusion_passenger-full:1.0.6
+FROM singlecellportal/phusion_passenger-ruby25:1.0.8
+#FROM singlecellportal/phusion_passenger-full:1.0.8
 
 # Or, instead of the 'full' variant, use one of these:
 #FROM singlecellportal/phusion_passenger-ruby19:<VERSION>
@@ -15,10 +15,8 @@ FROM singlecellportal/phusion_passenger-ruby25:1.0.6
 #FROM singlecellportal/phusion_passenger-nodejs:<VERSION>
 #FROM singlecellportal/phusion_passenger-customizable:<VERSION>
 
-# labeling the image clearly, following & extending the schema at: (TODO: shorten url)
-# https://github.com/opencontainers/image-spec/blob/da296dcb1e473a9b4e2d148941d7faa9ac8fea3f/annotations.md#back-compatibility-with-label-schema .
+# Labeling the image clearly, following & extending the schema at https://bit.ly/2pJmHyS :
 # To see labels later, run: docker inspect singlecellportal/rails-baseimage:<version>
-
 ARG VCS_REF="unspecified"
 ARG ORIGIN_STORY="unspecified"
 LABEL org.opencontainers.image.vendor="Broad Institute" \
@@ -90,3 +88,4 @@ COPY ./dhparam.pem /usr/local/share/ca-certificates
 
 RUN mkdir -p /etc/docker_image_creation_info
 COPY ./tmp/*state_report.txt /etc/docker_image_creation_info/
+RUN cp /etc/docker_image_creation_info/*state_report.txt /tmp/

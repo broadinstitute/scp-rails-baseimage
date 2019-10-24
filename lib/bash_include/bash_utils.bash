@@ -8,12 +8,12 @@ export newline='
 
 # exit 1 with an error message
 function exit_with_error_message {
-    echo "ERROR: $@" >&2;
+    echo "ERROR: $@ (at ${BASH_SOURCE[1]}:$BASH_LINENO)" >&2;
     exit 1
 }
 
-function set_pathname_extension {
+function get_file_extension_from_path {
     FULL_PATH="$1"
     SEP="."
-    echo ${FULL_PATH##*$SEP} || exit_with_error_message "could not extract file extension from $FULL_PATH"
+    echo ${FULL_PATH##*$SEP} || exit_with_error_message "Could not extract file extension from $FULL_PATH"
 }

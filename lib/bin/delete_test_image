@@ -1,0 +1,32 @@
+#!/bin/bash
+
+THIS_DIR="$(cd "$(dirname "$BASH_SOURCE")"; pwd)"
+BASE_DIR="$(dirname $(dirname $THIS_DIR))"
+
+. $BASE_DIR/lib/bash_include/config.bash
+
+SOURCE_DIR="$BASE_DIR"
+
+max_attempts=3
+for image_to_remove in $TEST_IMAGE_FULLNAME $(docker images --filter "reference=$TEST_IMAGE_FULLNAME:*" -q --no-trunc);do
+    attempt_number=1
+    image_hash_to_remove="$( docker inspect --format='{{.Id}}' $image_to_remove 2>/dev/null | sed 's/sha256://' )"
+
+    while [ -n "$image_hash_to_remove" -a "$attempt_number" -le "$max_attempts" ]; do # if image still exists...
+        for potentially_downstream_image in $(docker images -q); do
+            if docker history $potentially_downstream_image | grep -q ${image_hash_to_remove:0:12}; then
+                docker rmi $potentially_downstream_image
+            fi
+        done
+
+        docker rmi -f $image_to_remove 2>/dev/null
+
+        # for next loop, to see if the image is still there:
+        image_hash_to_remove="$( docker inspect --format='{{.Id}}' $image_to_remove 2>/dev/null | sed 's/sha256://' )"
+        attempt_number="$(($attempt_number + 1))"
+    done
+done
+
+docker image ls | grep "\\b$TEST_IMAGE_FULLNAME\\b" && exit_with_error_message "Oops, found test image after supposedly deleting it"
+
+exit 0
