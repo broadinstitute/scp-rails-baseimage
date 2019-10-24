@@ -36,13 +36,13 @@ To publish your changes, you'll need to increment the version number in `./versi
     * (done) tests the image by making sure it can serve a page (nginx welcome page), probably mapping in a generic webapp.conf file to have it start up nginx and expose port 80 or 443 and make a GET on localhost. (don't worry about ssl)
     * (done) verifies that version.txt contains a version number that hasn't been used yet (or if it has been used, it's for an identical image)
     * ( done ) consider a mutex for the two jenkins scripts, since they both run $THIS_DIR/clean, and they both use a bunch of resources.
-    * ( TODO ) configure jenkins jobs with final email addresses and branches
+    * ( done ) configure jenkins jobs with final email addresses and branches
 * ( TODO ) automatically publish git tags for published versions
 * ( TODO ) publish version 1.0.
 * ( TODO ) jenkins/github integration
 * ( TODO ) document or add optional flags to do local testing faster (I have a hack or two that's not comitted yet)
 * ( TODO ) does/can/should ci/test work when not run in the image builder container?
-* ( TODO ) automatically keep track of new releases to underlying layers to help us keep this image up to date.
+* ( TODO as SCP-1960 ) automatically keep track of new releases to underlying layers to help us keep this image up to date.
     * ( TODO ) a test job should watch for changes and "fail" if there are new changes that need to be incorporated
         * ( TODO ) for the google-maintained base image, which is spec'ed to latest:
             * ( TODO ) force pull the "latest" image, so you can't possibly get confused by something stale?
