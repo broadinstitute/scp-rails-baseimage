@@ -5,7 +5,7 @@
 # defaults
 DOCKER_IMAGE_FOR_VAULT_CLIENT='vault:1.1.3'
 export VAULT_ADDR=https://clotho.broadinstitute.org:8200
-export JENKINS_VAULT_TOKEN_PATH
+export JENKINS_VAULT_TOKEN_PATH=/etc/vault-token-scp
 
 . $BASE_DIR/lib/bash_include/bash_utils.bash || exit 1 # load common utils
 
@@ -70,9 +70,9 @@ function extract_vault_secrets_as_json_file {
 }
 
 function get_authentication_method {
-    if [[ -f $JENKINS_VAULT_TOKEN_PATH ]]; then
+    if [ -f $JENKINS_VAULT_TOKEN_PATH ]; then
         echo "-method=token -no-print=true token=$(cat $JENKINS_VAULT_TOKEN_PATH)"
-    elif [[ -f ~/.github-token-for-vault ]]; then
+    elif [ -f ~/.github-token-for-vault ]; then
         echo "-method=github -no-print=true token=$(cat ~/.github-token-for-vault)"
     else
         exit_with_error_message "Could not find a way to authenticate to vault"

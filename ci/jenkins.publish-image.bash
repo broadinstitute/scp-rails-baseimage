@@ -9,8 +9,6 @@ BASH_INCLUDE="$BASE_DIR/lib/bash_include"
 . $BASH_INCLUDE/bash_utils.bash
 . $BASE_DIR/lib/bash_include/extract_vault_secrets.bash
 
-export JENKINS_VAULT_TOKEN_PATH=/etc/vault-token-scp
-
 # login to dockerhub
 SCPDOCKERHUB_VAULT_PATH="secret/kdux/scp/production/scp_dockerhub_credentials.json"
 . "$(extract_vault_secrets_as_env_file "$SCPDOCKERHUB_VAULT_PATH" )" || exit 1
