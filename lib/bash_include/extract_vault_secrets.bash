@@ -72,8 +72,10 @@ function extract_vault_secrets_as_json_file {
 function get_authentication_method {
     if [[ -f $JENKINS_VAULT_TOKEN_PATH ]]; then
         echo "-method=token -no-print=true token=$(cat $JENKINS_VAULT_TOKEN_PATH)"
-    else
+    elif [[ -f ~/.github-token-for-vault ]]; then
         echo "-method=github -no-print=true token=$(cat ~/.github-token-for-vault)"
+    else
+        exit_with_error_message "Could not find a way to authenticate to vault"
     fi
 }
 
