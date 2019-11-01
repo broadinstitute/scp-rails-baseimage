@@ -17,11 +17,16 @@ done
 
 IMAGE_BUILDER_IMAGE="$DOCKER_NAMESPACE/image_builder:latest"
 DOCKER_RUN_FLAGS="-it --rm"
+DOCKER_MOUNT_ARGS="-v $PWD:$DOCKER_MAP_DIR \
+                   -v /var/run/docker.sock:/var/run/docker.sock"
+if [ -f $HOME/.github-token-for-vault ]; then
+    DOCKER_MOUNT_ARGS="$DOCKER_MOUNT_ARGS \
+                       -v $HOME/.github-token-for-vault:/root/.github-token-for-vault"
+fi
+
 docker run --name image_builder_container \
     $DOCKER_RUN_FLAGS \
-    -v $PWD:$DOCKER_MAP_DIR \
-    -v /var/run/docker.sock:/var/run/docker.sock \
-    -v $HOME/.github-token-for-vault:/root/.github-token-for-vault \
+    $DOCKER_MOUNT_ARGS \
     -a stdout -a stderr \
     "$IMAGE_BUILDER_IMAGE" \
     sh -lc "cd $DOCKER_MAP_DIR; $RUN_THIS_COMMAND" \
