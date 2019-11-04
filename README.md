@@ -20,9 +20,14 @@ To update the versions of the underlying images, modify requirements.bash (and t
 
 To make changes to how the various layers get downloaded, changed and rebuilt, look in `./lib/` and `./ci/` .
 
+run `git grep DEBUG_HACK` to find a couple places in the code that might be worth editing to develop faster.
+
 ## Testing changes ##
 
-Once you have made changes that you are ready to test, you'll want to build the image. Running `./ci/local_build` is recommended way to do this on a workstation. All of the high-level scripts that would normally be called directly are in `./ci/` , including `build` and `local_build`. If you have the right prerequisites installed, you could run `build` directly on a workstation, but `local_build` will take care of running it in a container that has the necessary things installed already. If the image builds successfully, you can use it to do further testing.
+Once you have made changes that you are ready to test,
+you'll want to:
+*  build the image. Running `./ci/local_build` is recommended way to do this on a workstation. All of the high-level scripts that would normally be called directly are in `./ci/` , including `build` and `local_build`. If you have the right prerequisites installed, you could run `build` directly on a workstation, but `local_build` will take care of running it in a container that has the necessary things installed already. If the image builds successfully, you can use it to do further testing.
+* run ./ci/test and make sure it exits with 0
 
 ## Publishing changes ##
 
@@ -44,9 +49,11 @@ To publish your changes, you'll need to increment the version number in `./versi
 * ( TODO ) does/can/should ci/test work when not run in the image builder container?
 * ( TODO as SCP-1960 ) automatically keep track of new releases to underlying layers to help us keep this image up to date.
     * ( TODO ) a test job should watch for changes and "fail" if there are new changes that need to be incorporated
-        * ( TODO ) for the google-maintained base image, which is spec'ed to latest:
-            * ( TODO ) force pull the "latest" image, so you can't possibly get confused by something stale?
+        * ( done ) for the google-maintained base image, which is spec'ed to latest:
+            * ( done ) force pull the "latest" image, so you can't possibly get confused by something stale?
             * ( done ) complain if there are new changes that need to be published without a new version number
         * ( TODO ) for the phusion-maintained source code that creates the intermediate images (which are pinned to specific versions):
-            * ( TODO ) check for more recent release tags, fail if any found
+            * ( TODO ) check for more recent release tags, and if any are found:
+                * ( TODO ) print a warning
+                * ( TODO ) have the build send an email (set build to unstable)
 * ( done ) add a "clean" script that removes tmp, maybe clears out some docker images, too?
