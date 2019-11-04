@@ -47,13 +47,13 @@ To publish your changes, you'll need to increment the version number in `./versi
 * ( TODO ) jenkins/github integration
 * ( TODO ) document or add optional flags to do local testing faster (I have a hack or two that's not comitted yet)
 * ( TODO ) does/can/should ci/test work when not run in the image builder container?
-* ( TODO as SCP-1960 ) automatically keep track of new releases to underlying layers to help us keep this image up to date.
-    * ( TODO ) a test job should watch for changes and "fail" if there are new changes that need to be incorporated
+* ( done ) automatically keep track of new releases to underlying layers to help us keep this image up to date.
+    * ( done ) a test job should watch for changes and "fail" if there are new changes that need to be incorporated
         * ( done ) for the google-maintained base image, which is spec'ed to latest:
             * ( done ) force pull the "latest" image, so you can't possibly get confused by something stale?
             * ( done ) complain if there are new changes that need to be published without a new version number
-        * ( ...pending... ) for the phusion-maintained source code that creates the intermediate images (which are pinned to specific versions):
+        * ( done ) for the phusion-maintained source code that creates the intermediate images (which are pinned to specific versions):
             * ( done ) check for more recent release tags, and if any are found:
                 * ( done ) print a warning
-                * ( ...pending... ) have the build send an email (set build to unstable)
+                * ( done ) have the build send an email (set build to unstable)
 * ( done ) add a "clean" script that removes tmp, maybe clears out some docker images, too?
