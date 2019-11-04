@@ -91,4 +91,3 @@ function load_secrets_from_vault {
         $DOCKER_IMAGE_FOR_VAULT_CLIENT \
         sh -lc "vault login $(get_authentication_method) && vault read -format json $SECRET_PATH_IN_VAULT" || exit_with_error_message "Could not read $SECRET_PATH_IN_VAULT"
 }
-

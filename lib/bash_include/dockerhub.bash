@@ -62,4 +62,3 @@ function docker_force_pull {
     fi
     return 0
 }
-

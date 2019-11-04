@@ -24,7 +24,7 @@ for ((i=0;i<"${#ARGS_ARRAY[@]}";++i)); do
 done
 
 # DEBUG_HACK: For faster debug cycles, UNCOMMENT this block:
-# # filter out "--no-cache" argument to docker, because using the cache is WAAAY faster:
+# # filter out "--no-cache" argument to docker, because using the cache is WAY faster:
 # for ((i=0;i<"${#ARGS_ARRAY[@]}";++i)); do
 #     if [ "--no-cache" == "${ARGS_ARRAY[i]}" ]; then
 #         unset ARGS_ARRAY[i]
@@ -35,4 +35,3 @@ done
 echo "This was called: \"$0 $@\""
 echo "...but will translate to: \"$REAL_DOCKER ${ARGS_ARRAY[@]}\""
 exec $REAL_DOCKER "${ARGS_ARRAY[@]}"
-
