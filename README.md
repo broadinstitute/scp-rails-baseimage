@@ -52,8 +52,8 @@ To publish your changes, you'll need to increment the version number in `./versi
         * ( done ) for the google-maintained base image, which is spec'ed to latest:
             * ( done ) force pull the "latest" image, so you can't possibly get confused by something stale?
             * ( done ) complain if there are new changes that need to be published without a new version number
-        * ( TODO ) for the phusion-maintained source code that creates the intermediate images (which are pinned to specific versions):
-            * ( TODO ) check for more recent release tags, and if any are found:
-                * ( TODO ) print a warning
-                * ( TODO ) have the build send an email (set build to unstable)
+        * ( ...pending... ) for the phusion-maintained source code that creates the intermediate images (which are pinned to specific versions):
+            * ( done ) check for more recent release tags, and if any are found:
+                * ( done ) print a warning
+                * ( ...pending... ) have the build send an email (set build to unstable)
 * ( done ) add a "clean" script that removes tmp, maybe clears out some docker images, too?
