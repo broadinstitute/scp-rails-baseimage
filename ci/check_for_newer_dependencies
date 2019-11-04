@@ -5,11 +5,9 @@
 THIS_DIR="$(cd "$(dirname "$BASH_SOURCE")"; pwd)"
 BASE_DIR="$(dirname $THIS_DIR)"
 BASH_INCLUDE="$BASE_DIR/lib/bash_include"
-BIN="$BASE_DIR/lib/bin"
 
 . $BASH_INCLUDE/config.bash
 . $BASH_INCLUDE/bash_utils.bash
-. $BASH_INCLUDE/dockerhub.bash
 
 function main {
     assert_git_tag_is_latest "$PHUSION_BASE_IMAGE_SOURCE_DIR"      "$PHUSION_BASE_IMAGE_REPO_RELEASE_TAG" || exit 1
@@ -31,4 +29,5 @@ function assert_git_tag_is_latest {
 
     popd || exit 1
 }
+
 main "$@"
