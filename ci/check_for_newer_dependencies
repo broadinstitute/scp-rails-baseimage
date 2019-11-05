@@ -1,0 +1,33 @@
+#!/bin/bash
+
+# USAGE: run with no arguments to check if the image code we are depending on and rebuilding has a newer release available that what we're using.
+
+THIS_DIR="$(cd "$(dirname "$BASH_SOURCE")"; pwd)"
+BASE_DIR="$(dirname $THIS_DIR)"
+BASH_INCLUDE="$BASE_DIR/lib/bash_include"
+
+. $BASH_INCLUDE/config.bash
+. $BASH_INCLUDE/bash_utils.bash
+
+function main {
+    assert_git_tag_is_latest "$PHUSION_BASE_IMAGE_SOURCE_DIR"      "$PHUSION_BASE_IMAGE_REPO_RELEASE_TAG" || exit 1
+    assert_git_tag_is_latest "$PHUSION_PASSENGER_IMAGE_SOURCE_DIR" "$PHUSION_PASSENGER_IMAGE_REPO_RELEASE_TAG" || exit 1
+}
+
+function assert_git_tag_is_latest {
+    local DEPENDENCY_SOURCE_DIR="$1"
+    local DEPENDENCY_REPO_RELEASE_TAG="$2"
+
+    pushd "$DEPENDENCY_SOURCE_DIR" || exit 1
+    echo "Checking for newer versions of dependency in $DEPENDENCY_SOURCE_DIR ..."
+
+    latest_git_tag="$(git for-each-ref --sort=-creatordate --format '%(refname)' refs/tags | sed 's/^refs\/tags\///' | head -n 1)"
+
+    if [ "$latest_git_tag" != "$DEPENDENCY_REPO_RELEASE_TAG" ]; then
+        exit_with_error_message "This is not the latest released version of the phusion base image--use $latest_git_tag instead."
+    fi
+
+    popd || exit 1
+}
+
+main "$@"

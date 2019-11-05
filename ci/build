@@ -8,11 +8,34 @@ BIN="$BASE_DIR/lib/bin"
 BASH_INCLUDE="$BASE_DIR/lib/bash_include"
 
 . $BASH_INCLUDE/bash_utils.bash
+. $BASH_INCLUDE/dockerhub.bash
+. $BASH_INCLUDE/extract_vault_secrets.bash
 
 function main {
+
+    force_pull_base_image || exit_with_error_message "FAILED to force pull base image."
+
     $BIN/rebuild_phusion_baseimage || exit_with_error_message "FAILED to rebuild phusion base image"
     $BIN/rebuild_phusion_passenger_image || exit_with_error_message "FAILED to rebuild phusion passenger image"
     $BIN/rebuild_image || exit_with_error_message "FAILED to build docker image"
+}
+
+# Forcing the true latest version of $BASE_IMAGE .
+function force_pull_base_image {
+    SCP_SERVICE_USER_VAULT_PATH="secret/kdux/scp/production/scp_service_account.json"
+    . "$(extract_vault_secrets_as_env_file "$SCP_SERVICE_USER_VAULT_PATH")" || exit 1
+    SCP_SERVICE_USER_JSON_FILE="$( extract_vault_secrets_as_json_file "$SCP_SERVICE_USER_VAULT_PATH")" || exit 1
+    login_to_gcr_io $client_email $SCP_SERVICE_USER_JSON_FILE || exit_with_error_message "FAILED to login to gcr.io"
+    docker_force_pull $BASE_IMAGE || exit_with_error_message "FAILED to pull base image $BASE_IMAGE ."
+}
+
+function login_to_gcr_io {
+    local user_email="$1"
+    local keyfile="$2"
+
+    echo gcloud -q auth activate-service-account $client_email || exit 1
+    gcloud -q --verbosity=info auth activate-service-account "$client_email" --key-file="$keyfile" || exit 1
+    gcloud -q auth configure-docker || exit 1
 }
 
 main "$@"

@@ -1,3 +1,5 @@
+# This file contains functionality for docker registries, and some of it may assume the registry is dockerhub
+
 if ! [ -d "$BASE_DIR" ]; then
     exit_with_error_message "\$BASE_DIR should already be defined before this was included at ${BASH_SOURCE[1]}:${BASH_LINENO}"
 fi
@@ -60,4 +62,3 @@ function docker_force_pull {
     fi
     return 0
 }
-

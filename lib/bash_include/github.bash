@@ -37,4 +37,3 @@ function report_local_repository_state {
     GIT_COMMAND_SHOW_LOCAL_CHANGES="git status -vv"
     echo "...with the following local changes, as reported by \"$GIT_COMMAND_SHOW_LOCAL_CHANGES\": $(echo;$GIT_COMMAND_SHOW_LOCAL_CHANGES)"
 }
-

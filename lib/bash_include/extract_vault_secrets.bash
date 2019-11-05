@@ -4,8 +4,8 @@
 
 # defaults
 DOCKER_IMAGE_FOR_VAULT_CLIENT='vault:1.1.3'
-export VAULT_ADDR
-export JENKINS_VAULT_TOKEN_PATH
+export VAULT_ADDR=https://clotho.broadinstitute.org:8200
+export JENKINS_VAULT_TOKEN_PATH=/etc/vault-token-scp
 
 . $BASE_DIR/lib/bash_include/bash_utils.bash || exit 1 # load common utils
 
@@ -26,32 +26,56 @@ function determine_export_filename {
     echo "$FILENAME"
 }
 
-# extract generic JSON vault secrets and
+# extract generic JSON vault secrets and put them into the form of a bash
+# include script that sets environment variables:
 function extract_vault_secrets_as_env_file {
-    VAULT_SECRET_PATH="$1"
-    echo "setting filename for $VAULT_SECRET_PATH export"
-    SECRET_EXPORT_FILEPATH="$(determine_export_filepath $VAULT_SECRET_PATH bash)" || exit 1
+    local VAULT_SECRET_PATH="$1"
     # load raw secrets from vault
-    echo "extracting vault secrets from $VAULT_SECRET_PATH"
-    VALS=$(load_secrets_from_vault $VAULT_SECRET_PATH) || exit_with_error_message "Could not read secrets from $VAULT_SECRET_PATH"
+    echo "extracting vault secrets from $VAULT_SECRET_PATH" >&2
+    local VALS=$(load_secrets_from_vault $VAULT_SECRET_PATH) || exit_with_error_message "Could not read secrets from $VAULT_SECRET_PATH"
+
+    echo "determining filename for $VAULT_SECRET_PATH export" >&2
+    local SECRET_EXPORT_FILEPATH="$(determine_export_filepath $VAULT_SECRET_PATH bash)" || exit 1
 
     mkdir -p "$(dirname "$SECRET_EXPORT_FILEPATH" )" || exit 1
     echo "### env secrets from $VAULT_SECRET_PATH ###" >| $SECRET_EXPORT_FILEPATH || exit_with_error_message "Could not initialize $SECRET_EXPORT_FILEPATH"
     # for each key in the secrets config, export the value
     for key in $(echo $VALS | jq .data | jq --raw-output 'keys[]')
     do
-        echo "setting value for: $key"
+        echo "setting value for: $key" >&2
         curr_val=$(echo $VALS | jq .data | jq --raw-output .$key) || exit_with_error_message "Could not extract value for $key from $VAULT_SECRET_PATH"
         echo "export $key='$curr_val'" >> $SECRET_EXPORT_FILEPATH
     done
+
+    echo $SECRET_EXPORT_FILEPATH
     unset VALS key
 }
 
+# extract generic JSON vault secrets and put them into the form of a bash
+# include script that sets environment variables:
+function extract_vault_secrets_as_json_file {
+    local VAULT_SECRET_PATH="$1"
+    # load raw secrets from vault
+    echo "extracting vault secrets from $VAULT_SECRET_PATH" >&2
+    local VALS=$(load_secrets_from_vault $VAULT_SECRET_PATH) || exit_with_error_message "Could not read secrets from $VAULT_SECRET_PATH"
+
+    echo "determining filename for $VAULT_SECRET_PATH export" >&2
+    local SECRET_JSON_FILEPATH="$(determine_export_filepath $VAULT_SECRET_PATH json)" || exit 1
+
+    mkdir -p "$(dirname "$SECRET_JSON_FILEPATH" )" || exit 1
+    echo "$VALS" | jq .data >| $SECRET_JSON_FILEPATH || exit_with_error_message "Could not initialize $SECRET_JSON_FILEPATH"
+
+    echo $SECRET_JSON_FILEPATH
+    unset VALS
+}
+
 function get_authentication_method {
-    if [[ -f $JENKINS_VAULT_TOKEN_PATH ]]; then
+    if [ -f $JENKINS_VAULT_TOKEN_PATH ]; then
         echo "-method=token -no-print=true token=$(cat $JENKINS_VAULT_TOKEN_PATH)"
-    else
+    elif [ -f ~/.github-token-for-vault ]; then
         echo "-method=github -no-print=true token=$(cat ~/.github-token-for-vault)"
+    else
+        exit_with_error_message "Could not find a way to authenticate to vault"
     fi
 }
 
@@ -67,4 +91,3 @@ function load_secrets_from_vault {
         $DOCKER_IMAGE_FOR_VAULT_CLIENT \
         sh -lc "vault login $(get_authentication_method) && vault read -format json $SECRET_PATH_IN_VAULT" || exit_with_error_message "Could not read $SECRET_PATH_IN_VAULT"
 }
-
