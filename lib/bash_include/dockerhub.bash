@@ -50,12 +50,14 @@ function docker_image_has_been_published_unsafe {
 function docker_force_pull {
     local IMAGE="$1"
 
+    echo "Forcefully pulling a fresh version of the docker image \"$IMAGE\":" >&2
     if docker inspect $IMAGE --format '.' >/dev/null 2>&1; then # if IMAGE exists
         docker tag $IMAGE temp || { echo "ERROR: FAILED at $BASH_SOURCE:$LINENO" >&2; return 1; }
         docker rmi $IMAGE || { echo "ERROR: FAILED at $BASH_SOURCE:$LINENO" >&2; return 1; }
     fi
 
     docker pull $IMAGE || { echo "ERROR: FAILED at $BASH_SOURCE:$LINENO" >&2; return 1; }
+    echo "...got a fresh version of the docker image \"$IMAGE\"." >&2
 
     if docker inspect temp --format '.' >/dev/null 2>&1; then # if temp image exists
         docker rmi temp || { echo "ERROR: FAILED at $BASH_SOURCE:$LINENO" >&2; return 1; }
