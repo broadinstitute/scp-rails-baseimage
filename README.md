@@ -44,7 +44,7 @@ To publish your changes, you'll need to increment the version number in `./versi
     * ( done ) configure jenkins jobs with final email addresses and branches
 * ( TODO ) automatically publish git tags for published versions
 * ( TODO ) publish version 1.0.
-* ( TODO ) jenkins/github integration
+* ( in progress ) jenkins/github integration
 * ( TODO ) document or add optional flags to do local testing faster (I have a hack or two that's not comitted yet)
 * ( TODO ) does/can/should ci/test work when not run in the image builder container?
 * ( done ) automatically keep track of new releases to underlying layers to help us keep this image up to date.
