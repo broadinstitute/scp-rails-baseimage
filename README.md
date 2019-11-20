@@ -55,5 +55,5 @@ To publish your changes, you'll need to increment the version number in `./versi
                 * ( done ) have the build send an email (set build to unstable)
 * ( done ) add a "clean" script that removes tmp, maybe clears out some docker images, too?
 * ( TODO ) does/can/should ci/test work when not run in the image builder container?
-* ( TODO ) publish version 1.0.
 * ( TODO ) automatically publish git tags for published versions
+* ( TODO ) publish version 1.0.
