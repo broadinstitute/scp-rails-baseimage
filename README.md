@@ -2,6 +2,8 @@ This code is used to build and publish a Docker image that the Single Cell Porta
 
 Jobs for this repo are at: https://scp-jenkins.dsp-techops.broadinstitute.org/view/scp-rails-baseimage/
 
+[Playbook](https://docs.google.com/document/d/1vJz6hXdjAu8LBAfIS4oMy7yLIUX177gU1H7BxTPPzAU/edit#heading=h.8gg7zdig7ttm)
+
 # What is this? Why does it exists? #
 
 This provides a base image with Ruby on Rails ready to go with Phusion Passenger. The Single Cell Portal has a Docker image that was formerly built on `phusion/passenger-docker`, but this ensures that it's built on a [managed base image](https://cloud.google.com/container-registry/docs/managed-base-images) provided by Google, which is good because they keep those images up-to-date with security fixes and it apparently makes our auditors happy. So here, we rebuild a couple images from Phusion with tweaks to make that happen.

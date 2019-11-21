@@ -9,7 +9,7 @@ fi
 # making sure publish fails if version.txt has not been updated to avoid re-using the version tag:
 function assert_main_version_unused {
     if main_version_already_published; then
-        exit_with_error_message "Version $MAIN_VERSION has already been published, and refers to a different image. Please edit version.txt according to semver and try again."
+        exit_with_error_message "Version $MAIN_VERSION has already been published, and refers to a different image. Something must have changed, perhaps a newer version of $BASE_IMAGE (BASE_IMAGE). Please edit version.txt in $BASE_GITHUB_URL according to semver and try again to publish these changes. There are more details in the playbook at https://docs.google.com/document/d/1vJz6hXdjAu8LBAfIS4oMy7yLIUX177gU1H7BxTPPzAU/edit#heading=h.8gg7zdig7ttm ."
     fi
 }
 

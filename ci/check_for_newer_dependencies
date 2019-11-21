@@ -24,7 +24,7 @@ function assert_git_tag_is_latest {
     latest_git_tag="$(git for-each-ref --sort=-creatordate --format '%(refname)' refs/tags | sed 's/^refs\/tags\///' | head -n 1)"
 
     if [ "$latest_git_tag" != "$DEPENDENCY_REPO_RELEASE_TAG" ]; then
-        exit_with_error_message "This is not the latest released version of the image built from $DEPENDENCY_SOURCE_DIR --use $latest_git_tag instead."
+        exit_with_error_message "This is not the latest released version of the image built from $DEPENDENCY_SOURCE_DIR --use $latest_git_tag instead in ./requirements.bash a.k.a. $BASE_GITHUB_URL/blob/master/requirements.bash . There are more details in the playbook at https://docs.google.com/document/d/1vJz6hXdjAu8LBAfIS4oMy7yLIUX177gU1H7BxTPPzAU/edit#heading=h.8gg7zdig7ttm ."
     fi
 
     popd || exit 1
