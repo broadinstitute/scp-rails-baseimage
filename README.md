@@ -42,11 +42,8 @@ To publish your changes, you'll need to increment the version number in `./versi
     * (done) verifies that version.txt contains a version number that hasn't been used yet (or if it has been used, it's for an identical image)
     * ( done ) consider a mutex for the two jenkins scripts, since they both run $THIS_DIR/clean, and they both use a bunch of resources.
     * ( done ) configure jenkins jobs with final email addresses and branches
-* ( TODO ) automatically publish git tags for published versions
-* ( TODO ) publish version 1.0.
-* ( TODO ) jenkins/github integration
-* ( TODO ) document or add optional flags to do local testing faster (I have a hack or two that's not comitted yet)
-* ( TODO ) does/can/should ci/test work when not run in the image builder container?
+* ( in progress ) jenkins/github integration
+* ( done ) document how to do local testing faster (look for "DEBUG_HACK" )
 * ( done ) automatically keep track of new releases to underlying layers to help us keep this image up to date.
     * ( done ) a test job should watch for changes and "fail" if there are new changes that need to be incorporated
         * ( done ) for the google-maintained base image, which is spec'ed to latest:
@@ -57,3 +54,6 @@ To publish your changes, you'll need to increment the version number in `./versi
                 * ( done ) print a warning
                 * ( done ) have the build send an email (set build to unstable)
 * ( done ) add a "clean" script that removes tmp, maybe clears out some docker images, too?
+* ( TODO ) does/can/should ci/test work when not run in the image builder container?
+* ( TODO ) automatically publish git tags for published versions
+* ( TODO ) publish version 1.0.
