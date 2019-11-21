@@ -5,6 +5,7 @@ fi
 
 . "$BASE_DIR/requirements.bash"
 
+BASE_GITHUB_URL="https://github.com/broadinstitute/scp-rails-baseimage"
 DOCKER_NAMESPACE="singlecellportal"
 MAIN_IMAGE_NAME="rails-baseimage"
 MAIN_IMAGE_FULLNAME="$DOCKER_NAMESPACE/$MAIN_IMAGE_NAME"

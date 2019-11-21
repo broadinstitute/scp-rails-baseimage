@@ -9,7 +9,7 @@ fi
 # making sure publish fails if version.txt has not been updated to avoid re-using the version tag:
 function assert_main_version_unused {
     if main_version_already_published; then
-        exit_with_error_message "Version $MAIN_VERSION has already been published, and refers to a different image. Please edit version.txt according to semver and try again."
+        exit_with_error_message "Version $MAIN_VERSION has already been published, and refers to a different image. Something must have changed, perhaps a newer version of $BASE_IMAGE (BASE_IMAGE). Please edit version.txt according to semver and try again to publish these changes."
     fi
 }
 
