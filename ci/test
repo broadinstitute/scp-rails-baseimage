@@ -7,6 +7,7 @@ BASE_DIR="$(dirname $THIS_DIR)"
 BASH_INCLUDE="$BASE_DIR/lib/bash_include"
 BIN="$BASE_DIR/lib/bin"
 
+. $BASH_INCLUDE/show_banner.bash
 . $BASH_INCLUDE/config.bash
 . $BASH_INCLUDE/bash_utils.bash
 . $BASH_INCLUDE/dockerhub.bash
@@ -18,6 +19,11 @@ function main {
 }
 
 function test_serving_a_page {
+    echo
+    echo '########################################'
+    echo '## testing image can serve a page'
+    echo '########################################'
+
     $BIN/build_test_image || exit_with_error_message "FAILED to build test image"
 
     TEST_CONTAINER_NAME="${TEST_IMAGE_NAME}_container"
@@ -50,6 +56,11 @@ function test_serving_a_page {
 }
 
 function test_for_unpublished_changes {
+    echo
+    echo '########################################'
+    echo '## testing for unpublished changes'
+    echo '########################################'
+
     docker_force_pull "$MAIN_IMAGE_FULLNAME:latest" || exit_with_error_message "Could not pull fresh $MAIN_IMAGE_FULLNAME:latest from network"
     latest_image_hash="$(get_docker_hash_for_image ${MAIN_IMAGE_FULLNAME}:latest)" || exit 1
     candidate_image_hash="$(get_docker_hash_for_image ${MAIN_IMAGE_FULLNAME}:candidate)" || exit 1
