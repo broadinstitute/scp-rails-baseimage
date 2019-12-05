@@ -5,4 +5,4 @@ PHUSION_BASE_IMAGE_REPO="phusion/baseimage-docker"
 PHUSION_BASE_IMAGE_VERSION="0.11"
 
 PHUSION_PASSENGER_IMAGE_REPO="phusion/passenger-docker"
-PHUSION_PASSENGER_IMAGE_VERSION="1.0.9"
+PHUSION_PASSENGER_IMAGE_VERSION="1.0.9" #if you change this, you'll have to change the "FROM" line in ./Dockerfile also.
