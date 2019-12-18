@@ -23,7 +23,7 @@ for ((i=0;i<"${#ARGS_ARRAY[@]}";++i)); do
     fi
 done
 
-# DEBUG_HACK: For faster debug cycles, UNCOMMENT this block:
+# # DEBUG_HACK: For faster debug cycles, UNCOMMENT this block:
 # # filter out "--no-cache" argument to docker, because using the cache is WAY faster:
 # for ((i=0;i<"${#ARGS_ARRAY[@]}";++i)); do
 #     if [ "--no-cache" == "${ARGS_ARRAY[i]}" ]; then

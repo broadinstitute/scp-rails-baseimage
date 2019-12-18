@@ -6,6 +6,7 @@ THIS_DIR="$(cd "$(dirname "$BASH_SOURCE")"; pwd)"
 BASE_DIR="$(dirname $THIS_DIR)"
 BASH_INCLUDE="$BASE_DIR/lib/bash_include"
 
+. $BASH_INCLUDE/show_banner.bash
 . $BASH_INCLUDE/bash_utils.bash
 . $BASE_DIR/lib/bash_include/extract_vault_secrets.bash
 

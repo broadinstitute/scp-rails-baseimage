@@ -6,6 +6,7 @@ THIS_DIR="$(cd "$(dirname "$BASH_SOURCE")"; pwd)"
 BASE_DIR="$(dirname $THIS_DIR)"
 BASH_INCLUDE="$BASE_DIR/lib/bash_include"
 
+. $BASH_INCLUDE/show_banner.bash
 . $BASH_INCLUDE/bash_utils.bash
 
 $THIS_DIR/clean || exit_with_error_message "clean FAILED" # DEBUG_HACK: For faster debugging when running this repeately on a dev workstation for DEBUGGING, you may want to comment this line out.

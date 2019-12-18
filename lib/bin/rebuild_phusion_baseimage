@@ -2,6 +2,10 @@
 
 THIS_DIR="$(cd "$(dirname "$BASH_SOURCE")"; pwd)"
 BASE_DIR="$(dirname $(dirname $THIS_DIR))"
+echo
+echo '########################################'
+echo "## running \"$(basename "$BASH_SOURCE")\""
+echo '########################################'
 
 . $BASE_DIR/lib/bash_include/config.bash
 . $BASE_DIR/lib/bash_include/github.bash

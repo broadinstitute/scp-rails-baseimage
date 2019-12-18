@@ -1,12 +1,14 @@
 #!/bin/bash
 
 # USAGE: run with no arguments on a system with all prequisites installed to build the image. See also: local_build
+# TODO TODO: maybe commit some todo's and grep for them at the end of the test job?
 
 THIS_DIR="$(cd "$(dirname "$BASH_SOURCE")"; pwd)"
 BASE_DIR="$(dirname $THIS_DIR)"
 BIN="$BASE_DIR/lib/bin"
 BASH_INCLUDE="$BASE_DIR/lib/bash_include"
 
+. $BASH_INCLUDE/show_banner.bash
 . $BASH_INCLUDE/bash_utils.bash
 . $BASH_INCLUDE/dockerhub.bash
 . $BASH_INCLUDE/extract_vault_secrets.bash
@@ -22,11 +24,20 @@ function main {
 
 # Forcing the true latest version of $BASE_IMAGE .
 function force_pull_base_image {
+    echo
+    echo '########################################'
+    echo "##  pulling fresh BASE_IMAGE $BASE_IMAGE"
+    echo '########################################'
+
     SCP_SERVICE_USER_VAULT_PATH="secret/kdux/scp/production/scp_service_account.json"
     . "$(extract_vault_secrets_as_env_file "$SCP_SERVICE_USER_VAULT_PATH")" || exit 1
     SCP_SERVICE_USER_JSON_FILE="$( extract_vault_secrets_as_json_file "$SCP_SERVICE_USER_VAULT_PATH")" || exit 1
     login_to_gcr_io $client_email $SCP_SERVICE_USER_JSON_FILE || exit_with_error_message "FAILED to login to gcr.io"
     docker_force_pull $BASE_IMAGE || exit_with_error_message "FAILED to pull base image $BASE_IMAGE ."
+    echo "showing image history for \"$BASE_IMAGE\":"
+    docker history -H=false --no-trunc $BASE_IMAGE
+    echo "showing image inspect for \"$BASE_IMAGE\":"
+    docker inspect $BASE_IMAGE
 }
 
 function login_to_gcr_io {
