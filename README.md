@@ -32,7 +32,7 @@ you'll want to:
 * run ./ci/test and make sure it exits with 0
 
 ## Publishing changes ##
-
+ 
 To publish your changes, you'll need to increment the version number in `./version.txt` (in accordance with [SemVer](https://semver.org/), please), and get your changes committed, pushed, and merged into the `master` branch. At that point, [this Jenkins job](https://scp-jenkins.dsp-techops.broadinstitute.org/job/scp-rails-baseimage-publish/) will attempt to build and publish your changes to Docker Hub. It is possible, but not recommended, to publish from your workstation by running `./ci/publish`
 
 # Potential improvements #
