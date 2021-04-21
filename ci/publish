@@ -18,8 +18,13 @@ function main {
         docker image ls | grep "\\b$MAIN_IMAGE_FULLNAME\\b" | grep "\\b$PUBLISH_VERSION\\b" || exit 1 #confirm taggging worked
         docker push "$MAIN_IMAGE_FULLNAME:$PUBLISH_VERSION" || exit_with_error_message "FAILED to push $MAIN_IMAGE_FULLNAME:$PUBLISH_VERSION " # TODO: check if it FAILED because of docker login being needed
         echo "Published $MAIN_IMAGE_FULLNAME:$PUBLISH_VERSION -- see it at https://cloud.docker.com/u/singlecellportal/repository/docker/$MAIN_IMAGE_FULLNAME"
-    done
 
+        # publish to GCR in addition to dockerhub
+        docker tag "$MAIN_GCR_IMAGE_FULLNAME:candidate" "$MAIN_GCR_IMAGE_FULLNAME:$PUBLISH_VERSION" || exit_with_error_message "FAILED to tag $MAIN_GCR_IMAGE_FULLNAME with $PUBLISH_VERSION "
+        docker image ls | grep "\\b$MAIN_GCR_IMAGE_FULLNAME\\b" | grep "\\b$PUBLISH_VERSION\\b" || exit 1 #confirm taggging worked
+        docker push "$MAIN_GCR_IMAGE_FULLNAME:$PUBLISH_VERSION" || exit_with_error_message "FAILED to push $MAIN_GCR_IMAGE_FULLNAME:$PUBLISH_VERSION " # TODO: check if it FAILED because of docker login being needed
+        echo "Published $MAIN_GCR_IMAGE_FULLNAME:$PUBLISH_VERSION -- see it at https://console.cloud.google.com/gcr/images/$GCR_PROJECT/GLOBAL/$MAIN_IMAGE_NAME?project=$GCR_PROJECT"
+    done
 }
 
 main "$@"

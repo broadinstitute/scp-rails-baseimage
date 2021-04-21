@@ -7,8 +7,10 @@ fi
 
 BASE_GITHUB_URL="https://github.com/broadinstitute/scp-rails-baseimage"
 DOCKER_NAMESPACE="singlecellportal"
+GCR_PROJECT="broad-singlecellportal-staging"
 MAIN_IMAGE_NAME="rails-baseimage"
 MAIN_IMAGE_FULLNAME="$DOCKER_NAMESPACE/$MAIN_IMAGE_NAME"
+MAIN_GCR_IMAGE_FULLNAME="gcr.io/$GCR_PROJECT/$MAIN_IMAGE_NAME"
 MAIN_VERSION="$(cat $BASE_DIR/version.txt)"
 
 TEST_IMAGE_NAME="rails-testimage"
