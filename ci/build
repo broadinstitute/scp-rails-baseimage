@@ -29,7 +29,7 @@ function force_pull_base_image {
     echo "##  pulling fresh BASE_IMAGE $BASE_IMAGE"
     echo '########################################'
 
-    SCP_SERVICE_USER_VAULT_PATH="secret/kdux/scp/production/scp_service_account.json"
+    SCP_SERVICE_USER_VAULT_PATH="secret/kdux/scp/staging/scp_service_account.json"
     . "$(extract_vault_secrets_as_env_file "$SCP_SERVICE_USER_VAULT_PATH")" || exit 1
     SCP_SERVICE_USER_JSON_FILE="$( extract_vault_secrets_as_json_file "$SCP_SERVICE_USER_VAULT_PATH")" || exit 1
     login_to_gcr_io $client_email $SCP_SERVICE_USER_JSON_FILE || exit_with_error_message "FAILED to login to gcr.io"
