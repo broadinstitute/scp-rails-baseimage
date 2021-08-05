@@ -62,7 +62,8 @@ RUN apt-get update && apt-get install -y -qq --no-install-recommends libnginx-mo
 RUN apt-get clean && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
 # install node 14 since we're not using the 'customizable' version
-RUN curl -sL https://deb.nodesource.com/setup_14.x && apt-get update && apt-get install -y nodejs
+RUN curl -sL https://deb.nodesource.com/setup_14.x | bash -
+RUN apt-get update && apt-get install -y nodejs
 
 # add yarn
 RUN curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | sudo apt-key add -
