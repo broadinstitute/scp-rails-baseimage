@@ -3,7 +3,7 @@
 # load secrets from Vault for building/publishing SCP docker container
 
 # defaults
-DOCKER_IMAGE_FOR_VAULT_CLIENT='vault:1.1.3'
+DOCKER_IMAGE_FOR_VAULT_CLIENT='vault:1.9.0'
 export VAULT_ADDR=https://clotho.broadinstitute.org:8200
 export JENKINS_VAULT_TOKEN_PATH=/etc/vault-token-scp
 
