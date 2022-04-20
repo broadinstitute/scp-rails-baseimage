@@ -1,4 +1,4 @@
-FROM marketplace.gcr.io/google/ubuntu1804:latest
+FROM marketplace.gcr.io/google/ubuntu2004:latest
 
 # from https://docs.docker.com/install/linux/docker-ce/ubuntu/ : (plus make)
 ENV APT_INSTALL_FLAGS "-y -qq --no-install-recommends"
