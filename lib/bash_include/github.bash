@@ -24,7 +24,7 @@ function github_checkout {
 }
 
 function new_image_name_from_repo {
-    dir_name_from_repo $1 | sed 's/[-]\?docker//'
+    dir_name_from_repo $1 | sed 's/[-]docker//'
 }
 
 function dir_name_from_repo {

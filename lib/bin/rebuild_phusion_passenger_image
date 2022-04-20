@@ -26,8 +26,7 @@ sed -i "s~^FROM[[:space:]].\{1,\}$~FROM $DOCKER_NAMESPACE/phusion_baseimage:$PHU
 MAKE_TARGET=build_full
 MAKE_OUTPUT="$(make $MAKE_TARGET NAME="$IMAGE_FULLNAME")" || exit_with_error_message "make build FAILED" # build
 echo "$MAKE_OUTPUT"
-
-TAG_REPORT="$(echo "$MAKE_OUTPUT" | grep "^Successfully tagged $IMAGE_FULLNAME.*:$PHUSION_PASSENGER_IMAGE_VERSION\$")" || exit_with_error_message "Image not tagged as expected"
+TAG_REPORT="$(docker images | grep "$IMAGE_FULLNAME.*$PHUSION_PASSENGER_IMAGE_VERSION")" || exit_with_error_message "Image not tagged as expected"
 
 echo $TAG_REPORT > "$PHUSION_PASSENGER_IMAGE_SOURCE_STATE_REPORT"
 report_local_repository_state "$PHUSION_PASSENGER_IMAGE_SOURCE_DIR" >> "$PHUSION_PASSENGER_IMAGE_SOURCE_STATE_REPORT"
