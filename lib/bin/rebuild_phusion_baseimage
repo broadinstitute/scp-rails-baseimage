@@ -22,12 +22,10 @@ export PATH="$BASE_DIR/lib/docker_shim:$PATH" # use a docker shim to filter out 
 
 export PLATFORM=amd64 QEMU_ARCH=amd64 TAG_ARCH=amd64
 MAKE_OUTPUT="$(make build BASE_IMAGE="$BASE_IMAGE" NAME="$IMAGE_FULLNAME" )" || exit_with_error_message "make build FAILED" # build
-
-echo "$MAKE_OUTPUT"
 # due to mismatch of version tag in Makefile vs. version.txt, we must manually tag built image with correct name
 BUILT_IMAGE_NAME="$(echo $MAKE_OUTPUT | grep -e "...but will translate to" | awk '{ print $5 }')"
 echo $BUILT_IMAGE_NAME
-echo "docker tag $BUILT_IMAGE_NAME $TARGET_IMAGE_NAME"
+echo "Re-tagging $BUILT_IMAGE_NAME with: docker tag $BUILT_IMAGE_NAME $TARGET_IMAGE_NAME"
 docker tag $BUILT_IMAGE_NAME $TARGET_IMAGE_NAME
 
 TAG_REPORT="$(docker images | grep "$IMAGE_FULLNAME.*$PHUSION_BASE_IMAGE_VERSION")" || exit_with_error_message "Image not tagged as expected"
