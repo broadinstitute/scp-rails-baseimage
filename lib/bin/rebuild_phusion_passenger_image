@@ -11,8 +11,11 @@ echo '########################################'
 . $BASE_DIR/lib/bash_include/github.bash
 . $BASE_DIR/lib/bash_include/bash_utils.bash
 
+
 PHUSION_PASSENGER_IMAGE_NAME="$(new_image_name_from_repo $PHUSION_PASSENGER_IMAGE_REPO)"
 IMAGE_FULLNAME="$DOCKER_NAMESPACE/$PHUSION_PASSENGER_IMAGE_NAME"
+# add -full to target image to match Dockerfile
+TARGET_IMAGE_NAME="$IMAGE_FULLNAME-full:$PHUSION_PASSENGER_IMAGE_VERSION"
 
 github_checkout "$PHUSION_PASSENGER_IMAGE_REPO" "$PHUSION_PASSENGER_IMAGE_SOURCE_DIR" "$PHUSION_PASSENGER_IMAGE_REPO_RELEASE_TAG" || exit 1
 
@@ -25,7 +28,12 @@ sed -i "s~^FROM[[:space:]].\{1,\}$~FROM $DOCKER_NAMESPACE/phusion_baseimage:$PHU
 
 MAKE_TARGET=build_full
 MAKE_OUTPUT="$(make $MAKE_TARGET NAME="$IMAGE_FULLNAME")" || exit_with_error_message "make build FAILED" # build
-echo "$MAKE_OUTPUT"
+# due to mismatch of version tag in Makefile vs. version.txt, we must manually tag built image with correct name
+# since build_full will create an arm64 and amd64 image, we need to grab the correct (amd64) image id
+BUILT_IMAGE_TAG="$PHUSION_PASSENGER_IMAGE_VERSION-amd64"
+AMD64_IMAGE_ID="$(docker images | grep $BUILT_IMAGE_TAG | awk '{print $3}')"
+echo "Re-tagging image $AMD64_IMAGE_ID with: docker tag $AMD64_IMAGE_ID $TARGET_IMAGE_NAME"
+docker tag $AMD64_IMAGE_ID $TARGET_IMAGE_NAME
 TAG_REPORT="$(docker images | grep "$IMAGE_FULLNAME.*$PHUSION_PASSENGER_IMAGE_VERSION")" || exit_with_error_message "Image not tagged as expected"
 
 echo $TAG_REPORT > "$PHUSION_PASSENGER_IMAGE_SOURCE_STATE_REPORT"
