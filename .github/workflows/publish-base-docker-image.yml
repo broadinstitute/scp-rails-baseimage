@@ -1,0 +1,32 @@
+name: Publish rails-baseimage Docker image
+on:
+  push:
+    branches-ignore:
+      - master
+  workflow_dispatch:
+env:
+  VAULT_SECRET_PATH: 'secret/kdux/scp/staging/scp_service_account.json'
+
+jobs:
+  Build-And-Publish-Docker-Image:
+    runs-on: ubuntu-20.04
+    steps:
+      - name: Check out repository code
+        uses: actions/checkout@v3
+      - name: Configure gcloud container and activate service account
+        uses: ./.github/actions/configure-gcloud-container
+        with:
+          vault_secret_path: ${{ env.VAULT_SECRET_PATH }}
+          vault_addr: ${{ secrets.VAULT_ADDR }}
+          vault_role_id: ${{ secrets.VAULT_ROLE_ID }}
+          vault_secret_id: ${{ secrets.VAULT_SECRET_ID }}
+      - name: Authenticate to docker
+        shell: bash
+        run: |
+          # auth into GCR via Docker with token from service account
+          AUTH_TOKEN=$(docker run --rm ${{ env.IMAGE_NAME }} gcloud auth print-access-token)
+          echo $AUTH_TOKEN | docker login -u oauth2accesstoken --password-stdin https://gcr.io
+      - name: Test candidate base Docker image
+        run: ci/jenkins.build-and-test.bash
+
+
