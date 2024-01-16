@@ -6,6 +6,7 @@ on:
   workflow_dispatch:
 env:
   VAULT_SECRET_PATH: 'secret/kdux/scp/staging/scp_service_account.json'
+  IMAGE_NAME: 'gcloud-config'
 
 jobs:
   Build-And-Publish-Docker-Image:
