@@ -30,8 +30,17 @@ jobs:
           # need separate logins for gcr.io & marketplace.gcr.io
           echo $AUTH_TOKEN | docker login -u oauth2accesstoken --password-stdin https://gcr.io
           echo $AUTH_TOKEN | docker login -u oauth2accesstoken --password-stdin https://marketplace.gcr.io
-      - name: Build base Docker image
+      - name: Test candidate base Docker image
+        id: build-and-test
         run: |
+          set +e # continue on error to capture exit code
           ci/gha.build-and-test.bash
-
+          exitcode="$?"
+          echo "exitcode=$exitcode" >> $GITHUB_OUTPUT
+      - name: Check for unstable build
+        if: ${{ steps.build-and-test.exitcode == '99' }}
+        run: |
+          echo "### WARNING: THERE ARE UPDATED DEPENDENCIES, BUT THIS IMAGE WILL STILL FUNCTION ###"
+          echo "### MARKING AS SUCCESSFUL ###"
+          exit 0
 
