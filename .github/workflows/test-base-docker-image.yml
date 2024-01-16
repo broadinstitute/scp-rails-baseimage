@@ -22,6 +22,10 @@ jobs:
           vault_addr: ${{ secrets.VAULT_ADDR }}
           vault_role_id: ${{ secrets.VAULT_ROLE_ID }}
           vault_secret_id: ${{ secrets.VAULT_SECRET_ID }}
+      - name: Test docker pull
+        shell: bash
+        run: |
+          docker pull marketplace.gcr.io/google/ubuntu2004:latest
       - name: Authenticate to docker
         shell: bash
         run: |
@@ -30,7 +34,6 @@ jobs:
           echo $AUTH_TOKEN | docker login -u oauth2accesstoken --password-stdin https://gcr.io
       - name: Build base Docker image
         run: |
-          docker images
           ci/gha.publish-image.bash
 
 
