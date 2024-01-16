@@ -1,7 +1,7 @@
 name: Test rails-baseimage Docker image
 on:
   push:
-    branches:
+    branches-ignore:
       - master
   workflow_dispatch:
   pull_request:
