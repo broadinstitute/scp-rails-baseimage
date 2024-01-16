@@ -10,4 +10,4 @@ BASH_INCLUDE="$BASE_DIR/lib/bash_include"
 . $BASH_INCLUDE/bash_utils.bash
 . $BASE_DIR/lib/bash_include/extract_vault_secrets.bash
 
-$THIS_DIR/clean && $THIS_DIR/gha-build && $THIS_DIR/test && $THIS_DIR/gha-publish || exit 1
+$THIS_DIR/gha-build && $THIS_DIR/test && $THIS_DIR/gha-publish || exit 1

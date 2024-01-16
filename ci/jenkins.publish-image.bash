@@ -15,4 +15,4 @@ SCPDOCKERHUB_VAULT_PATH="secret/kdux/scp/production/scp_dockerhub_credentials.js
 . "$(extract_vault_secrets_as_env_file "$SCPDOCKERHUB_VAULT_PATH" )" || exit 1
 echo "$DOCKERHUB_PASSWORD" | docker login -u "$DOCKERHUB_USERNAME" --password-stdin || exit 1
 
-$THIS_DIR/build && $THIS_DIR/test && $THIS_DIR/publish || exit 1
+$THIS_DIR/clean && $THIS_DIR/build && $THIS_DIR/test && $THIS_DIR/publish || exit 1
