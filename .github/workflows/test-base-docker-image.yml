@@ -22,12 +22,18 @@ jobs:
           vault_addr: ${{ secrets.VAULT_ADDR }}
           vault_role_id: ${{ secrets.VAULT_ROLE_ID }}
           vault_secret_id: ${{ secrets.VAULT_SECRET_ID }}
-      - name: Authenticate to GCR & docker
+      - name: Authenticate to GCR
         shell: bash
         run: |
           # auth into GCR via Docker with token from service account
           AUTH_TOKEN=$(docker run --rm ${{ env.IMAGE_NAME }} gcloud auth print-access-token)
           echo $AUTH_TOKEN | docker login -u oauth2accesstoken --password-stdin https://gcr.io
+      - name: Authenticate to Dockerhub
+        uses: ./.github/actions/authenticate-to-dockerhub
+        with:
+          vault_addr: ${{ secrets.VAULT_ADDR }}
+          vault_role_id: ${{ secrets.VAULT_ROLE_ID }}
+          vault_secret_id: ${{ secrets.VAULT_SECRET_ID }}
       - name: Build base Docker image
         run: |
           ci/gha.build-and-test.bash
