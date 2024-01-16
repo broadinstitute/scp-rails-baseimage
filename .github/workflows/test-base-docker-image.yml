@@ -28,7 +28,10 @@ jobs:
           # auth into GCR via Docker with token from service account
           AUTH_TOKEN=$(docker run --rm ${{ env.IMAGE_NAME }} gcloud auth print-access-token)
           echo $AUTH_TOKEN | docker login -u oauth2accesstoken --password-stdin https://gcr.io
+          echo $AUTH_TOKEN | docker login -u oauth2accesstoken --password-stdin
       - name: Build base Docker image
-        run: ci/gha.publish-image.bash
+        run: |
+          docker images
+          ci/gha.publish-image.bash
 
 
