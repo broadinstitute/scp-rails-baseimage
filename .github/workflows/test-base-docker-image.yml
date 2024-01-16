@@ -10,7 +10,7 @@ env:
   IMAGE_NAME: 'gcloud-config'
 
 jobs:
-  Build-And-Publish-Docker-Image:
+  Build-And-Test-Docker-Image:
     runs-on: ubuntu-20.04
     steps:
       - name: Check out repository code
@@ -30,6 +30,6 @@ jobs:
           echo $AUTH_TOKEN | docker login -u oauth2accesstoken --password-stdin https://gcr.io
       - name: Build base Docker image
         run: |
-          ci/gha.publish-image.bash
+          ci/gha.build-and-test.bash
 
 
