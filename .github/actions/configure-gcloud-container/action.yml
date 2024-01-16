@@ -53,6 +53,7 @@ runs:
         echo >> Dockerfile-gcloud
         echo "COPY $SERVICE_ACCOUNT_FILE $SERVICE_ACCOUNT_PATH" >> Dockerfile-gcloud
         echo "RUN gcloud auth activate-service-account --key-file=$SERVICE_ACCOUNT_PATH" >> Dockerfile-gcloud
+        echo "RUN gcloud auth configure-docker" >> Dockerfile-gcloud
         echo "RUN ssh-keygen -t rsa -f /root/.ssh/google_compute_engine -C root -b 2048 -q -N \"\"" >> Dockerfile-gcloud
         # install NumPy for faster tunnelling and to suppress warnings
         echo "RUN \$(gcloud info --format=\"value(basic.python_location)\") -m pip install numpy" >> Dockerfile-gcloud 
