@@ -37,10 +37,11 @@ jobs:
           exitcode="$?"
           echo "exitcode=$exitcode" >> $GITHUB_OUTPUT
       - name: Check for unstable build
-        if: ${{ steps.build-and-publish.exitcode == '99' }}
         run: |
-          echo "### WARNING: THERE ARE UPDATED DEPENDENCIES, BUT THIS IMAGE WILL STILL FUNCTION ###"
-          echo "### MARKING AS SUCCESSFUL ###"
-          exit 0
+          if [[ "${{ steps.build-and-test.exitcode }}" = "99" ]]; then
+            echo "### WARNING: THERE ARE UPDATED DEPENDENCIES, BUT THIS IMAGE WILL STILL FUNCTION ###"
+            echo "### MARKING AS SUCCESSFUL ###"
+            exit 0
+          fi
 
 
