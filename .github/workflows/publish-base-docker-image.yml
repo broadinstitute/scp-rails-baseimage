@@ -31,17 +31,12 @@ jobs:
           echo $AUTH_TOKEN | docker login -u oauth2accesstoken --password-stdin https://marketplace.gcr.io
       - name: Build and publish base Docker image
         id: build-and-publish
+        continue-on-error: true
         run: |
-          set +e # continue on error to capture exit code
           ci/gha.publish-image.bash
-          exitcode="$?"
-          echo "exitcode=$exitcode" >> $GITHUB_OUTPUT
-      - name: Check for unstable build
-        run: |
-          if [[ "${{ steps.build-and-test.exitcode }}" = "99" ]]; then
-            echo "### WARNING: THERE ARE UPDATED DEPENDENCIES, BUT THIS IMAGE WILL STILL FUNCTION ###"
-            echo "### MARKING AS SUCCESSFUL ###"
-            exit 0
-          fi
-
+          echo "exit-code=$?" >> $GITHUB_OUTPUT
+      - name: Set exit code
+        uses: ./.github/actions/set-exit-code
+        with:
+          exit-code: ${{ steps.build-and-publish.outputs.exit-code }}
 

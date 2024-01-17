@@ -35,12 +35,8 @@ jobs:
         continue-on-error: true
         run: |
           ci/gha.build-and-test.bash
-          exitcode="$?"
-          echo "exitcode=$exitcode" >> $GITHUB_OUTPUT
-      - name: Check for unstable build
-        run: |
-          if [[ "${{ steps.build-and-test.exitcode }}" = "99" ]]; then
-            echo "### WARNING: THERE ARE UPDATED DEPENDENCIES, BUT THIS IMAGE WILL STILL FUNCTION ###"
-            echo "### MARKING AS SUCCESSFUL ###"
-            exit 0
-          fi
+          echo "exit-code=$?" >> $GITHUB_OUTPUT
+      - name: Set exit code
+        uses: ./.github/actions/set-exit-code
+        with:
+          exit-code: ${{ steps.build-and-test.outputs.exit-code }}
