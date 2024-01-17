@@ -31,8 +31,8 @@ jobs:
           echo $AUTH_TOKEN | docker login -u oauth2accesstoken --password-stdin https://marketplace.gcr.io
       - name: Build and publish base Docker image
         id: build-and-publish
-        continue-on-error: true
         run: |
+          set +e # continue to allow capturing exit code
           ci/gha.publish-image.bash
           echo "exit-code=$?" >> $GITHUB_OUTPUT
       - name: Set exit code
