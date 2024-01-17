@@ -36,6 +36,7 @@ jobs:
           set +e # continue on error to capture exit code
           ci/gha.build-and-test.bash
           exitcode="$?"
+          echo "exitcode=$exitcode"
           echo "exitcode=$exitcode" >> $GITHUB_OUTPUT
       - name: Check for unstable build
         if: ${{ steps.build-and-test.exitcode == '99' }}
