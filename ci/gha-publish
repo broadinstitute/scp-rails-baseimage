@@ -1,0 +1,24 @@
+#!/bin/bash
+
+# USAGE: run this with no argumants to publish the image that was built. Or better yet, don't run this, and let the jenkins job take care of it.
+
+THIS_DIR="$(cd "$(dirname "$BASH_SOURCE")"; pwd)"
+BASE_DIR="$(dirname $THIS_DIR)"
+BASH_INCLUDE="$BASE_DIR/lib/bash_include"
+
+. $BASH_INCLUDE/show_banner.bash
+. $BASH_INCLUDE/config.bash
+. $BASH_INCLUDE/dockerhub.bash
+
+function main {
+    assert_main_version_unused
+
+    for PUBLISH_VERSION in "$MAIN_VERSION" "latest";do
+        docker tag "$MAIN_IMAGE_FULLNAME:candidate" "$MAIN_GCR_IMAGE_FULLNAME:$PUBLISH_VERSION" || exit_with_error_message "FAILED to tag $MAIN_GCR_IMAGE_FULLNAME with $PUBLISH_VERSION "
+        docker image ls | grep "\\b$MAIN_GCR_IMAGE_FULLNAME\\b" | grep "\\b$PUBLISH_VERSION\\b" || exit 1 #confirm taggging worked
+        docker push "$MAIN_GCR_IMAGE_FULLNAME:$PUBLISH_VERSION" || exit_with_error_message "FAILED to push $MAIN_GCR_IMAGE_FULLNAME:$PUBLISH_VERSION " # TODO: check if it FAILED because of docker login being needed
+        echo "Published $MAIN_GCR_IMAGE_FULLNAME:$PUBLISH_VERSION -- see it at https://console.cloud.google.com/gcr/images/$GCR_PROJECT/GLOBAL/$MAIN_IMAGE_NAME?project=$GCR_PROJECT"
+    done
+}
+
+main "$@"

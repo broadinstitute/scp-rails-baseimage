@@ -1,0 +1,19 @@
+name: 'Set exit code'
+description: 'Sets exit code of workflow using status from previous step, allowing for unstable 99 as good'
+inputs:
+  exit-code:
+    description: 'Exit code from previous step'
+    required: true
+runs:
+  using: 'composite'
+  steps:
+    - name: Set exit code
+      shell: bash
+      run: |
+        if [[ "${{ inputs.exit-code }}" -eq "99" ]]; then
+          echo "### WARNING: THERE ARE UPDATED DEPENDENCIES, BUT THIS IMAGE WILL STILL FUNCTION ###"
+          echo "### MARKING AS SUCCESSFUL ###"
+          exit 0
+        else
+          exit ${{ inputs.exit-code }}
+        fi
