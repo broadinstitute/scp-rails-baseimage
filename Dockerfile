@@ -61,8 +61,8 @@ RUN apt-get clean && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 RUN apt-get update && apt-get install -y -qq --no-install-recommends libnginx-mod-http-headers-more-filter
 RUN apt-get clean && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
-# install node 16 since we're not using the 'customizable' version
-RUN curl -sL https://deb.nodesource.com/setup_16.x | bash -
+# install node 20 since we're not using the 'customizable' version
+RUN curl -sSL https://deb.nodesource.com/setup_20.x | bash -
 RUN apt-get update && apt-get install -y nodejs
 
 # add yarn
