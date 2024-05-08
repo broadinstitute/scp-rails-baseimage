@@ -14,7 +14,7 @@ jobs:
     runs-on: ubuntu-20.04
     steps:
       - name: Check out repository code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
       - name: Configure gcloud container and activate service account
         uses: ./.github/actions/configure-gcloud-container
         with:
@@ -35,7 +35,6 @@ jobs:
         run: |
           set +e # continue to allow capturing exit code
           ci/gha.build-and-test.bash
-          docker images
           echo "exit-code=$?" >> $GITHUB_OUTPUT
       - name: Set exit code
         uses: ./.github/actions/set-exit-code
