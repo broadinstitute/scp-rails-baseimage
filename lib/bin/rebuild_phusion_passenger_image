@@ -14,8 +14,8 @@ echo '########################################'
 
 PHUSION_PASSENGER_IMAGE_NAME="$(new_image_name_from_repo $PHUSION_PASSENGER_IMAGE_REPO)"
 IMAGE_FULLNAME="$DOCKER_NAMESPACE/$PHUSION_PASSENGER_IMAGE_NAME"
-# add -full to target image to match Dockerfile
-TARGET_IMAGE_NAME="$IMAGE_FULLNAME-full:$PHUSION_PASSENGER_IMAGE_VERSION"
+# add -ruby31 to target image to match Dockerfile
+TARGET_IMAGE_NAME="$IMAGE_FULLNAME-ruby31:$PHUSION_PASSENGER_IMAGE_VERSION"
 
 github_checkout "$PHUSION_PASSENGER_IMAGE_REPO" "$PHUSION_PASSENGER_IMAGE_SOURCE_DIR" "$PHUSION_PASSENGER_IMAGE_REPO_RELEASE_TAG" || exit 1
 
@@ -34,7 +34,7 @@ sed -i "s~^FROM[[:space:]].\{1,\}$~FROM $DOCKER_NAMESPACE/phusion_passenger-base
 MAKE_TARGET=build_ruby31
 MAKE_OUTPUT="$(make $MAKE_TARGET NAME="$IMAGE_FULLNAME")" || exit_with_error_message "make build FAILED" # build
 # due to mismatch of version tag in Makefile vs. version.txt, we must manually tag built image with correct name
-# since build_full will create an arm64 and amd64 image, we need to grab the correct (amd64) image id
+# since build_ruby31 will create an arm64 and amd64 image, we need to grab the correct (amd64) image id
 BUILT_IMAGE_TAG="$PHUSION_PASSENGER_IMAGE_VERSION-amd64"
 AMD64_IMAGE_ID="$(docker images | grep $BUILT_IMAGE_TAG | awk '{print $3}')"
 echo "Re-tagging image $AMD64_IMAGE_ID with: docker tag $AMD64_IMAGE_ID $TARGET_IMAGE_NAME"
