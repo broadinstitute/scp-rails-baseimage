@@ -35,6 +35,7 @@ jobs:
         run: |
           set +e # continue to allow capturing exit code
           ci/gha.build-and-test.bash
+          docker images
           echo "exit-code=$?" >> $GITHUB_OUTPUT
       - name: Set exit code
         uses: ./.github/actions/set-exit-code
