@@ -1,9 +1,9 @@
-# Use singlecellportal/phusion_passenger-full as base image. To make your builds reproducible, make
+# Use singlecellportal/phusion_passenger-ruby32 as base image. To make your builds reproducible, make
 # sure you lock down to a specific version, not to `latest`!
 # See https://github.com/phusion/passenger-docker/blob/master/Changelog.md for
 # a list of version numbers.
 
-FROM singlecellportal/phusion_passenger-full:2.5.1
+FROM singlecellportal/phusion_passenger-ruby32:2.5.1
 #FROM singlecellportal/phusion_passenger-full:1.0.8
 
 # Or, instead of the 'full' variant, use one of these:
