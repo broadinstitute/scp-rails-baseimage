@@ -1,6 +1,6 @@
 This code is used to build and publish a Docker image that the Single Cell Portal team uses as a basis for Rails servers.
 
-Jobs for this repo are at: https://scp-jenkins.dsp-techops.broadinstitute.org/view/scp-rails-baseimage/
+Jobs for this repo are at: https://github.com/broadinstitute/scp-rails-baseimage/actions
 
 [Playbook](https://docs.google.com/document/d/1vJz6hXdjAu8LBAfIS4oMy7yLIUX177gU1H7BxTPPzAU/edit#heading=h.8gg7zdig7ttm)
 
@@ -33,29 +33,4 @@ you'll want to:
 
 ## Publishing changes ##
  
-To publish your changes, you'll need to increment the version number in `./version.txt` (in accordance with [SemVer](https://semver.org/), please), and get your changes committed, pushed, and merged into the `master` branch. At that point, [this Jenkins job](https://scp-jenkins.dsp-techops.broadinstitute.org/job/scp-rails-baseimage-publish/) will attempt to build and publish your changes to Docker Hub. It is possible, but not recommended, to publish from your workstation by running `./ci/publish`
-
-# Potential improvements #
-
-* ( done ) automatically smoke test changes to the image on any branch to gate pull requests:
-    * (done) add a jenkins job to run the build/test on all branches (except master), and corresponding script, which:
-    * (done) builds the image (and verifies that it built it)
-    * (done) tests the image by making sure it can serve a page (nginx welcome page), probably mapping in a generic webapp.conf file to have it start up nginx and expose port 80 or 443 and make a GET on localhost. (don't worry about ssl)
-    * (done) verifies that version.txt contains a version number that hasn't been used yet (or if it has been used, it's for an identical image)
-    * ( done ) consider a mutex for the two jenkins scripts, since they both run $THIS_DIR/clean, and they both use a bunch of resources.
-    * ( done ) configure jenkins jobs with final email addresses and branches
-* ( done ) jenkins/github integration
-* ( done ) document how to do local testing faster (look for "DEBUG_HACK" )
-* ( done ) automatically keep track of new releases to underlying layers to help us keep this image up to date.
-    * ( done ) a test job should watch for changes and "fail" if there are new changes that need to be incorporated
-        * ( done ) for the google-maintained base image, which is spec'ed to latest:
-            * ( done ) force pull the "latest" image, so you can't possibly get confused by something stale?
-            * ( done ) complain if there are new changes that need to be published without a new version number
-        * ( done ) for the phusion-maintained source code that creates the intermediate images (which are pinned to specific versions):
-            * ( done ) check for more recent release tags, and if any are found:
-                * ( done ) print a warning
-                * ( done ) have the build send an email (set build to unstable)
-* ( done ) add a "clean" script that removes tmp, maybe clears out some docker images, too?
-* ( done ) publish version 1.0.
-* ( TODO ) does/can/should ci/test work when not run in the image builder container?
-* ( TODO ) automatically publish git tags for published versions
+To publish your changes, you'll need to increment the version number in `./version.txt` (in accordance with [SemVer](https://semver.org/), please), and get your changes committed, pushed, and merged into the `master` branch. At that point, [this Github workflow](https://github.com/broadinstitute/scp-rails-baseimage/actions/workflows/publish-base-docker-image.yml) will attempt to build and publish your changes to GCR.  It is not recommended (or likely possible) to publish locally.

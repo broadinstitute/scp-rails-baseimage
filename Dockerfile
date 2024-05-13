@@ -1,9 +1,9 @@
-# Use singlecellportal/phusion_passenger-full as base image. To make your builds reproducible, make
+# Use singlecellportal/phusion_passenger-ruby32 as base image. To make your builds reproducible, make
 # sure you lock down to a specific version, not to `latest`!
 # See https://github.com/phusion/passenger-docker/blob/master/Changelog.md for
 # a list of version numbers.
 
-FROM singlecellportal/phusion_passenger-full:2.4.1
+FROM singlecellportal/phusion_passenger-ruby32:2.5.1
 #FROM singlecellportal/phusion_passenger-full:1.0.8
 
 # Or, instead of the 'full' variant, use one of these:
@@ -61,8 +61,8 @@ RUN apt-get clean && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 RUN apt-get update && apt-get install -y -qq --no-install-recommends libnginx-mod-http-headers-more-filter
 RUN apt-get clean && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
-# install node 16 since we're not using the 'customizable' version
-RUN curl -sL https://deb.nodesource.com/setup_16.x | bash -
+# install node 20 since we're not using the 'customizable' version
+RUN curl -sSL https://deb.nodesource.com/setup_20.x | bash -
 RUN apt-get update && apt-get install -y nodejs
 
 # add yarn
