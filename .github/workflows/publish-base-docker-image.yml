@@ -5,7 +5,7 @@ on:
       - master
   workflow_dispatch:
 env:
-  GOOGLE_PROJECT: 'broad-singlecellportal-staging'
+  GOOGLE_CLOUD_PROJECT: 'broad-singlecellportal-staging'
 
 jobs:
   Build-And-Publish-Docker-Image:
@@ -17,7 +17,7 @@ jobs:
         uses: ./.github/actions/setup-gcloud
         with:
           service_account_email: '839419950053-compute@developer.gserviceaccount.com'
-          google_cloud_project: ${{ env.GOOGLE_PROJECT }}
+          google_cloud_project: ${{ env.GOOGLE_CLOUD_PROJECT }}
       - name: Build and publish base Docker image
         id: build-and-publish
         run: |

@@ -6,7 +6,7 @@ on:
   workflow_dispatch:
   pull_request:
 env:
-  GOOGLE_PROJECT: 'broad-singlecellportal-staging'
+  GOOGLE_CLOUD_PROJECT: 'broad-singlecellportal-staging'
 
 jobs:
   Build-And-Test-Docker-Image:
@@ -21,7 +21,7 @@ jobs:
         uses: ./.github/actions/setup-gcloud
         with:
           service_account_email: '839419950053-compute@developer.gserviceaccount.com'
-          google_cloud_project: 'broad-singlecellportal-staging'
+          google_cloud_project: ${{ env.GOOGLE_CLOUD_PROJECT }}
       - name: Test candidate base Docker image
         id: build-and-test
         run: |
