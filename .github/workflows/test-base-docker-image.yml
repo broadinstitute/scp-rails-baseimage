@@ -6,30 +6,22 @@ on:
   workflow_dispatch:
   pull_request:
 env:
-  VAULT_SECRET_PATH: 'secret/kdux/scp/staging/scp_service_account.json'
-  IMAGE_NAME: 'gcloud-config'
+  GOOGLE_PROJECT: 'broad-singlecellportal-staging'
 
 jobs:
   Build-And-Test-Docker-Image:
     runs-on: ubuntu-20.04
+    permissions:
+      contents: 'read'
+      id-token: 'write'
     steps:
       - name: Check out repository code
         uses: actions/checkout@v4
-      - name: Configure gcloud container and activate service account
-        uses: ./.github/actions/configure-gcloud-container
+      - name: Configure gcloud
+        uses: ./.github/actions/setup-gcloud
         with:
-          vault_secret_path: ${{ env.VAULT_SECRET_PATH }}
-          vault_addr: ${{ secrets.VAULT_ADDR }}
-          vault_role_id: ${{ secrets.VAULT_ROLE_ID }}
-          vault_secret_id: ${{ secrets.VAULT_SECRET_ID }}
-      - name: Authenticate to GCR
-        shell: bash
-        run: |
-          # auth into GCR via Docker with token from service account
-          AUTH_TOKEN=$(docker run --rm ${{ env.IMAGE_NAME }} gcloud auth print-access-token)
-          # need separate logins for gcr.io & marketplace.gcr.io
-          echo $AUTH_TOKEN | docker login -u oauth2accesstoken --password-stdin https://gcr.io
-          echo $AUTH_TOKEN | docker login -u oauth2accesstoken --password-stdin https://marketplace.gcr.io
+          service_account_email: '839419950053-compute@developer.gserviceaccount.com'
+          google_cloud_project: $GOOGLE_PROJECT
       - name: Test candidate base Docker image
         id: build-and-test
         run: |

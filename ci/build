@@ -29,24 +29,11 @@ function force_pull_base_image {
     echo "##  pulling fresh BASE_IMAGE $BASE_IMAGE"
     echo '########################################'
 
-    SCP_SERVICE_USER_VAULT_PATH="secret/kdux/scp/staging/scp_service_account.json"
-    . "$(extract_vault_secrets_as_env_file "$SCP_SERVICE_USER_VAULT_PATH")" || exit 1
-    SCP_SERVICE_USER_JSON_FILE="$( extract_vault_secrets_as_json_file "$SCP_SERVICE_USER_VAULT_PATH")" || exit 1
-    login_to_gcr_io $client_email $SCP_SERVICE_USER_JSON_FILE || exit_with_error_message "FAILED to login to gcr.io"
     docker_force_pull $BASE_IMAGE || exit_with_error_message "FAILED to pull base image $BASE_IMAGE ."
     echo "showing image history for \"$BASE_IMAGE\":"
     docker history -H=false --no-trunc $BASE_IMAGE
     echo "showing image inspect for \"$BASE_IMAGE\":"
     docker inspect $BASE_IMAGE
-}
-
-function login_to_gcr_io {
-    local user_email="$1"
-    local keyfile="$2"
-
-    echo gcloud -q auth activate-service-account $client_email || exit 1
-    gcloud -q --verbosity=info auth activate-service-account "$client_email" --key-file="$keyfile" || exit 1
-    gcloud -q auth configure-docker || exit 1
 }
 
 main "$@"
