@@ -21,7 +21,7 @@ jobs:
         uses: ./.github/actions/setup-gcloud
         with:
           service_account_email: '839419950053-compute@developer.gserviceaccount.com'
-          google_cloud_project: $GOOGLE_PROJECT
+          google_cloud_project: 'broad-singlecellportal-staging'
       - name: Test candidate base Docker image
         id: build-and-test
         run: |
