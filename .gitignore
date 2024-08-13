@@ -1,3 +1,4 @@
 /tmp
 /tmp/**
 /.idea
+gha-creds-*.json
