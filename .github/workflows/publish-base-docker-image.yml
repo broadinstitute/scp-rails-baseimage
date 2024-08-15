@@ -2,7 +2,7 @@ name: Publish rails-baseimage Docker image
 on:
   push:
     branches:
-      - master
+      - main
   workflow_dispatch:
 env:
   GOOGLE_CLOUD_PROJECT: 'broad-singlecellportal-staging'

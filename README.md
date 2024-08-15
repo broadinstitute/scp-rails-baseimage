@@ -33,4 +33,4 @@ you'll want to:
 
 ## Publishing changes ##
  
-To publish your changes, you'll need to increment the version number in `./version.txt` (in accordance with [SemVer](https://semver.org/), please), and get your changes committed, pushed, and merged into the `master` branch. At that point, [this Github workflow](https://github.com/broadinstitute/scp-rails-baseimage/actions/workflows/publish-base-docker-image.yml) will attempt to build and publish your changes to GCR.  It is not recommended (or likely possible) to publish locally.
+To publish your changes, you'll need to increment the version number in `./version.txt` (in accordance with [SemVer](https://semver.org/), please), and get your changes committed, pushed, and merged into the `main` branch. At that point, [this Github workflow](https://github.com/broadinstitute/scp-rails-baseimage/actions/workflows/publish-base-docker-image.yml) will attempt to build and publish your changes to GCR.  It is not recommended (or likely possible) to publish locally.
