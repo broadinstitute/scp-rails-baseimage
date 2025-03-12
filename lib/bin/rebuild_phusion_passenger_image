@@ -27,14 +27,14 @@ export PATH="$BASE_DIR/lib/docker_shim:$PATH" # use a docker shim to filter out 
 MAKEFILE="Makefile"
 echo "Removing REGISTRY from image name"
 sed -i "s/NAME ?= \$(REGISTRY)\//NAME ?= /" $MAKEFILE
-sed -i '3,6d' $MAKEFILE
+sed -i '3,7d' $MAKEFILE
 cat $MAKEFILE
 # fix Dockerfile.base and Dockerfile use correct images
 BASE_DOCKER_FILE="./image/Dockerfile.base"
 sed -i "s~^FROM[[:space:]].\{1,\}$~FROM $DOCKER_NAMESPACE/phusion_baseimage:$PHUSION_BASE_IMAGE_VERSION~" $BASE_DOCKER_FILE
 sed -i "1d" $BASE_DOCKER_FILE
 DOCKER_FILE="./image/Dockerfile"
-sed -i "s~^FROM[[:space:]].\{1,\}$~FROM $DOCKER_NAMESPACE/phusion_passenger-base\:latest-\$ARCH~" $DOCKER_FILE
+sed -i "s~^FROM[[:space:]].\{1,\}$~FROM $DOCKER_NAMESPACE/phusion_passenger-base\:latest-amd64~" $DOCKER_FILE
 sed -i "1d" $DOCKER_FILE
 MAKE_TARGET=build_ruby34
 MAKE_OUTPUT="$(make $MAKE_TARGET NAME="$IMAGE_FULLNAME")" || exit_with_error_message "make build FAILED" # build
