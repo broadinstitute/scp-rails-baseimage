@@ -15,7 +15,7 @@ echo '########################################'
 PHUSION_PASSENGER_IMAGE_NAME="$(new_image_name_from_repo $PHUSION_PASSENGER_IMAGE_REPO)"
 IMAGE_FULLNAME="$DOCKER_NAMESPACE/$PHUSION_PASSENGER_IMAGE_NAME"
 # add -ruby32 to target image to match Dockerfile
-TARGET_IMAGE_NAME="$IMAGE_FULLNAME-ruby32:$PHUSION_PASSENGER_IMAGE_VERSION"
+TARGET_IMAGE_NAME="$IMAGE_FULLNAME-ruby34:$PHUSION_PASSENGER_IMAGE_VERSION"
 
 github_checkout "$PHUSION_PASSENGER_IMAGE_REPO" "$PHUSION_PASSENGER_IMAGE_SOURCE_DIR" "$PHUSION_PASSENGER_IMAGE_REPO_RELEASE_TAG" || exit 1
 
@@ -33,7 +33,9 @@ sed -i "s~^FROM[[:space:]].\{1,\}$~FROM $DOCKER_NAMESPACE/phusion_baseimage:$PHU
 DOCKER_FILE="./image/Dockerfile"
 BASEIMAGE_NAME="phusion_passenger-base"
 sed -i "s~^FROM[[:space:]].\{1,\}$~FROM $DOCKER_NAMESPACE/$BASEIMAGE_NAME\:latest-amd64~" $DOCKER_FILE
-docker buildx build --pull=false --progress=plain --platform linux/amd64 $(EXTRA_BUILD_FLAGS) --build-arg ARCH=amd64 -t $DOCKER_NAMESPACE/$BASEIMAGE_NAME:latest-amd64 -f image/Dockerfile.base base_image --no-cache --load
+rm -rf base_image
+cp -pR image base_image
+docker buildx build --pull=false --progress=plain --platform linux/amd64 --build-arg ARCH=amd64 -t $DOCKER_NAMESPACE/$BASEIMAGE_NAME:latest-amd64 -f image/Dockerfile.base base_image --no-cache --load
 MAKE_TARGET=build_ruby34
 MAKE_OUTPUT="$(make $MAKE_TARGET NAME="$IMAGE_FULLNAME")" || exit_with_error_message "make build FAILED" # build
 # due to mismatch of version tag in Makefile vs. version.txt, we must manually tag built image with correct name
