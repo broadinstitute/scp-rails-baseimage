@@ -25,5 +25,5 @@ runs:
         project_id: ${{ inputs.google_cloud_project }}
     - name: Authenticate docker
       shell: bash
-      run: gcloud auth configure-docker gcr.io,marketplace.gcr.io --quiet
+      run: gcloud auth configure-docker docker.io,gcr.io,marketplace.gcr.io --quiet
 

@@ -25,6 +25,7 @@ export PATH="$BASE_DIR/lib/docker_shim:$PATH" # use a docker shim to filter out 
 
 # remove registry prepend from Makefile
 MAKEFILE="Makefile"
+if [[ -z "$REGISTRY" ]]; then REGISTRY='docker.io'; fi
 sed -i "s/NAME = \$(REGISTRY)\//NAME = /" $MAKEFILE
 # fix Dockerfile.base and Dockerfile use correct images
 BASE_DOCKER_FILE="./image/Dockerfile.base"
