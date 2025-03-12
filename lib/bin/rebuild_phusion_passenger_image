@@ -30,6 +30,7 @@ sed -i "s/NAME ?= \$(REGISTRY)\//NAME ?= /" $MAKEFILE
 # fix Dockerfile.base and Dockerfile use correct images
 BASE_DOCKER_FILE="./image/Dockerfile.base"
 sed -i "s~^FROM[[:space:]].\{1,\}$~FROM $DOCKER_NAMESPACE/phusion_baseimage:$PHUSION_BASE_IMAGE_VERSION~" $BASE_DOCKER_FILE
+sed -n -e 1,9p $BASE_DOCKER_FILE
 DOCKER_FILE="./image/Dockerfile"
 sed -i "s~^FROM[[:space:]].\{1,\}$~FROM $DOCKER_NAMESPACE/phusion_passenger-base\:current-\$ARCH~" $DOCKER_FILE
 sed -n -e 1,9p $DOCKER_FILE
