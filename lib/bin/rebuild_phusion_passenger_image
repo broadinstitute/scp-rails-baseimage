@@ -27,17 +27,17 @@ export PATH="$BASE_DIR/lib/docker_shim:$PATH" # use a docker shim to filter out 
 MAKEFILE="Makefile"
 echo "Removing REGISTRY from image name"
 sed -i "s/NAME ?= \$(REGISTRY)\//NAME ?= /" $MAKEFILE
-cat Makefile
 # fix Dockerfile.base and Dockerfile use correct images
 BASE_DOCKER_FILE="./image/Dockerfile.base"
 sed -i "s~^FROM[[:space:]].\{1,\}$~FROM $DOCKER_NAMESPACE/phusion_baseimage:$PHUSION_BASE_IMAGE_VERSION~" $BASE_DOCKER_FILE
+sed -i "1d" $BASE_DOCKER_FILE
 DOCKER_FILE="./image/Dockerfile"
 sed -i "s~^FROM[[:space:]].\{1,\}$~FROM $DOCKER_NAMESPACE/phusion_passenger-base\:latest-\$ARCH~" $DOCKER_FILE
+sed -i "1d" $DOCKER_FILE
 MAKE_TARGET=build_ruby34
 export EXTRA_BUILD_FLAGS="--pull=false"
 export DOCKER_BUILDKIT=0
-export BUILDPLATFORM=linux/amd64
-env
+export PLATFORM=amd64 QEMU_ARCH=amd64 TAG_ARCH=amd64
 MAKE_OUTPUT="$(make $MAKE_TARGET NAME="$IMAGE_FULLNAME")" || exit_with_error_message "make build FAILED" # build
 # due to mismatch of version tag in Makefile vs. version.txt, we must manually tag built image with correct name
 # since build_ruby33 will create an arm64 and amd64 image, we need to grab the correct (amd64) image id
