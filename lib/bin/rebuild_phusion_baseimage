@@ -21,8 +21,6 @@ cd "$PHUSION_BASE_IMAGE_SOURCE_DIR" || exit 1
 export PATH="$BASE_DIR/lib/docker_shim:$PATH" # use a docker shim to filter out arguments we don't like
 
 export PLATFORM=amd64 QEMU_ARCH=amd64 TAG_ARCH=amd64
-export DOCKER_BUILDKIT=0
-export BUILDPLATFORM=linux/amd64
 MAKE_OUTPUT="$(make build BASE_IMAGE="$BASE_IMAGE" NAME="$IMAGE_FULLNAME" )" || exit_with_error_message "make build FAILED" # build
 # due to mismatch of version tag in Makefile vs. version.txt, we must manually tag built image with correct name
 BUILT_IMAGE_NAME="$(echo $MAKE_OUTPUT | grep -e "...but will translate to" | awk '{ print $5 }')"

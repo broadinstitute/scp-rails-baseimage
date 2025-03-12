@@ -37,7 +37,7 @@ MAKE_TARGET=build_ruby34
 export EXTRA_BUILD_FLAGS="--pull=false"
 export DOCKER_BUILDKIT=0
 export BUILDPLATFORM=linux/amd64
-docker inspect singlecellportal/phusion_baseimage:noble-1.0.0
+env
 MAKE_OUTPUT="$(make $MAKE_TARGET NAME="$IMAGE_FULLNAME")" || exit_with_error_message "make build FAILED" # build
 # due to mismatch of version tag in Makefile vs. version.txt, we must manually tag built image with correct name
 # since build_ruby33 will create an arm64 and amd64 image, we need to grab the correct (amd64) image id
