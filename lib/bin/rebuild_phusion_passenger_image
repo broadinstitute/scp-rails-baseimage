@@ -33,7 +33,7 @@ sed -i "s~^FROM[[:space:]].\{1,\}$~FROM $DOCKER_NAMESPACE/phusion_baseimage:$PHU
 DOCKER_FILE="./image/Dockerfile"
 sed -i "s~^FROM[[:space:]].\{1,\}$~FROM $DOCKER_NAMESPACE/phusion_passenger-base\:latest-\$ARCH~" $DOCKER_FILE
 MAKE_TARGET=build_ruby34
-EXTRA_BUILD_FLAGS="--pull=false"
+export EXTRA_BUILD_FLAGS="--pull=false"
 MAKE_OUTPUT="$(make $MAKE_TARGET NAME="$IMAGE_FULLNAME")" || exit_with_error_message "make build FAILED" # build
 # due to mismatch of version tag in Makefile vs. version.txt, we must manually tag built image with correct name
 # since build_ruby33 will create an arm64 and amd64 image, we need to grab the correct (amd64) image id
