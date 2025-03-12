@@ -28,10 +28,10 @@ MAKEFILE="Makefile"
 echo "Removing REGISTRY from image name"
 echo "BEFORE"
 sed -n -e 1,9p $MAKEFILE
-sed -i "s/NAME \?= \$(REGISTRY)\//NAME ?= /" $MAKEFILE
+sed -i "s/NAME ?= \$(REGISTRY)\//NAME ?= /" $MAKEFILE
 echo "AFTER"
 sed -n -e 1,9p $MAKEFILE
-ls -la Makefile*
+ls -l
 # fix Dockerfile.base and Dockerfile use correct images
 BASE_DOCKER_FILE="./image/Dockerfile.base"
 sed -i "s~^FROM[[:space:]].\{1,\}$~FROM $DOCKER_NAMESPACE/phusion_baseimage:$PHUSION_BASE_IMAGE_VERSION~" $BASE_DOCKER_FILE

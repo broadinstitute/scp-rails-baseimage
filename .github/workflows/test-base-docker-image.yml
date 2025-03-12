@@ -10,7 +10,7 @@ env:
 
 jobs:
   Build-And-Test-Docker-Image:
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     permissions:
       contents: 'read'
       id-token: 'write'
