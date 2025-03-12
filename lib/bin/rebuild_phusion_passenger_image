@@ -33,12 +33,14 @@ sed -i "s~^FROM[[:space:]].\{1,\}$~FROM $DOCKER_NAMESPACE/phusion_baseimage:$PHU
 DOCKER_FILE="./image/Dockerfile"
 INTER_IMAGE_NAME="phusion_passenger-base"
 INTER_IMAGE_TAG="latest-amd64"
-sed -i "s~^FROM[[:space:]].\{1,\}$~FROM $DOCKER_NAMESPACE/$INTER_IMAGE_NAME:$INTER_IMAGE_TAG~" $DOCKER_FILE
+INTER_FULLNAME="$DOCKER_NAMESPACE/$INTER_IMAGE_NAME:$INTER_IMAGE_TAG"
+echo "intermediate image is $INTER_FULLNAME"
+sed -i "s~^FROM[[:space:]].\{1,\}$~FROM $DOCKER_NAMESPACE/$INTER_IMAGE_NAME\:$INTER_IMAGE_TAG~" $DOCKER_FILE
 #rm -rf base_image
 #cp -pR image base_image
 #docker buildx build --pull=false --progress=plain --platform linux/amd64 --build-arg ARCH=amd64 -t $DOCKER_NAMESPACE/$BASEIMAGE_NAME:latest-amd64 -f image/Dockerfile.base base_image --no-cache --load
 INTER_MAKE_TARGET=build_base
-INTER_MAKE_OUTPUT="$(make $INTER_MAKE_TARGET NAME="$INTER_IMAGE_NAME:$INTER_IMAGE_TAG")" || exit_with_error_message "intermediate make build FAILED"
+INTER_MAKE_OUTPUT="$(make $INTER_MAKE_TARGET NAME="$INTER_FULLNAME")" || exit_with_error_message "intermediate make build FAILED"
 MAKE_TARGET=build_ruby34
 MAKE_OUTPUT="$(make $MAKE_TARGET NAME="$IMAGE_FULLNAME")" || exit_with_error_message "make build FAILED" # build
 # due to mismatch of version tag in Makefile vs. version.txt, we must manually tag built image with correct name
