@@ -54,7 +54,7 @@ RUN gem install bundler
 # Install imagemagick + dependencies
 RUN apt-get update && apt-get install -y -qq --no-install-recommends apt-utils sudo tzdata wget
 RUN apt-get update && apt-get install -y -qq --no-install-recommends imagemagick ghostscript build-essential unzip net-tools bc curl ssmtp debconf
-RUN apt-get update && apt-get install libaio1 shared-mime-info
+RUN apt-get update && apt-get install libaio1t64 shared-mime-info
 RUN apt-get clean && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
 # Install nginx-headers-more package
