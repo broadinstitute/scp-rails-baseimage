@@ -29,5 +29,5 @@ docker run --name image_builder_container \
     $DOCKER_MOUNT_ARGS \
     -a stdout -a stderr \
     "$IMAGE_BUILDER_IMAGE" \
-    sh -lc "cd $DOCKER_MAP_DIR; docker context use default; $RUN_THIS_COMMAND" \
+    sh -lc "cd $DOCKER_MAP_DIR; $RUN_THIS_COMMAND" \
     || { docker_exit_value="$?"; exit_with_error_message "Running \"$RUN_THIS_COMMAND\" FAILED in image builder container, docker run FAILED with $docker_exit_value"; }

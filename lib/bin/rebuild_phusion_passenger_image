@@ -35,7 +35,6 @@ DOCKER_FILE="./image/Dockerfile"
 sed -i "s~^FROM[[:space:]].\{1,\}$~FROM $DOCKER_NAMESPACE/phusion_passenger-base\:latest-\$ARCH~" $DOCKER_FILE
 sed -i "1d" $DOCKER_FILE
 MAKE_TARGET=build_ruby34
-export EXTRA_BUILD_FLAGS="--pull=false"
 export DOCKER_BUILDKIT=0
 export PLATFORM=amd64 QEMU_ARCH=amd64 TAG_ARCH=amd64
 MAKE_OUTPUT="$(make $MAKE_TARGET NAME="$IMAGE_FULLNAME")" || exit_with_error_message "make build FAILED" # build
