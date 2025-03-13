@@ -14,8 +14,9 @@ echo '########################################'
 
 PHUSION_PASSENGER_IMAGE_NAME="$(new_image_name_from_repo $PHUSION_PASSENGER_IMAGE_REPO)"
 IMAGE_FULLNAME="$DOCKER_NAMESPACE/$PHUSION_PASSENGER_IMAGE_NAME"
-# add -ruby32 to target image to match Dockerfile
-TARGET_IMAGE_NAME="$IMAGE_FULLNAME-ruby32:$PHUSION_PASSENGER_IMAGE_VERSION"
+# define Ruby target for use downstream in names/build targets
+RUBY_TARGET="ruby34"
+TARGET_IMAGE_NAME="$IMAGE_FULLNAME-$RUBY_TARGET:$PHUSION_PASSENGER_IMAGE_VERSION"
 
 github_checkout "$PHUSION_PASSENGER_IMAGE_REPO" "$PHUSION_PASSENGER_IMAGE_SOURCE_DIR" "$PHUSION_PASSENGER_IMAGE_REPO_RELEASE_TAG" || exit 1
 
@@ -25,17 +26,25 @@ export PATH="$BASE_DIR/lib/docker_shim:$PATH" # use a docker shim to filter out 
 
 # remove registry prepend from Makefile
 MAKEFILE="Makefile"
-sed -i "s/NAME = \$(REGISTRY)\//NAME = /" $MAKEFILE
+echo "Removing REGISTRY from image name"
+sed -i "s/NAME ?= \$(REGISTRY)\//NAME ?= /" $MAKEFILE
 # fix Dockerfile.base and Dockerfile use correct images
 BASE_DOCKER_FILE="./image/Dockerfile.base"
 sed -i "s~^FROM[[:space:]].\{1,\}$~FROM $DOCKER_NAMESPACE/phusion_baseimage:$PHUSION_BASE_IMAGE_VERSION~" $BASE_DOCKER_FILE
 DOCKER_FILE="./image/Dockerfile"
-sed -i "s~^FROM[[:space:]].\{1,\}$~FROM $DOCKER_NAMESPACE/phusion_passenger-base\:current-\$ARCH~" $DOCKER_FILE
-MAKE_TARGET=build_ruby32
-MAKE_OUTPUT="$(make $MAKE_TARGET NAME="$IMAGE_FULLNAME")" || exit_with_error_message "make build FAILED" # build
-# due to mismatch of version tag in Makefile vs. version.txt, we must manually tag built image with correct name
-# since build_ruby33 will create an arm64 and amd64 image, we need to grab the correct (amd64) image id
-BUILT_IMAGE_TAG="$PHUSION_PASSENGER_IMAGE_VERSION-amd64"
+ARCH_NAME="amd64"
+INTER_IMAGE_NAME="phusion_passenger-base"
+INTER_IMAGE_TAG="latest-$ARCH_NAME"
+sed -i "s~^FROM[[:space:]].\{1,\}$~FROM $DOCKER_NAMESPACE/$INTER_IMAGE_NAME:$INTER_IMAGE_TAG~" $DOCKER_FILE
+# explicitly build intermediate "base" phusion_passenger image as this apparently doesn't build automatically anymore
+# set BUILD_ARM64 to 0 (false) to only build amd64 architecture
+export BUILD_ARM64=0
+INTER_MAKE_TARGET=build_base
+make $INTER_MAKE_TARGET NAME="$DOCKER_NAMESPACE/phusion_passenger" || exit_with_error_message "intermediate make build FAILED"
+MAKE_TARGET="build_$RUBY_TARGET"
+make $MAKE_TARGET NAME="$IMAGE_FULLNAME" || exit_with_error_message "make build FAILED" # build
+# correct name/tags to expected values
+BUILT_IMAGE_TAG="$PHUSION_PASSENGER_IMAGE_VERSION-$ARCH_NAME"
 AMD64_IMAGE_ID="$(docker images | grep $BUILT_IMAGE_TAG | awk '{print $3}')"
 echo "Re-tagging image $AMD64_IMAGE_ID with: docker tag $AMD64_IMAGE_ID $TARGET_IMAGE_NAME"
 docker tag $AMD64_IMAGE_ID $TARGET_IMAGE_NAME
