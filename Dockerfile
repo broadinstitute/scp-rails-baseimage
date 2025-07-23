@@ -48,7 +48,8 @@ CMD ["/sbin/my_init"]
 #   Node.js and Meteor support.
 #RUN /pd_build/nodejs.sh
 
-# Update bundler
+# Update rubygems and bundler
+RUN gem update --system
 RUN gem install bundler
 
 # Install imagemagick + dependencies
