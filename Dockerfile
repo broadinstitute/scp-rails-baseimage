@@ -3,7 +3,7 @@
 # See https://github.com/phusion/passenger-docker/blob/master/Changelog.md for
 # a list of version numbers.
 
-FROM singlecellportal/phusion_passenger-ruby34:3.1.2
+FROM singlecellportal/phusion_passenger-ruby34:3.1.3
 #FROM singlecellportal/phusion_passenger-full:1.0.8
 
 # Or, instead of the 'full' variant, use one of these:
@@ -48,7 +48,8 @@ CMD ["/sbin/my_init"]
 #   Node.js and Meteor support.
 #RUN /pd_build/nodejs.sh
 
-# Update bundler
+# Update rubygems and bundler
+RUN gem update --system
 RUN gem install bundler
 
 # Install imagemagick + dependencies
