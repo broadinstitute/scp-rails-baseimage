@@ -3,7 +3,7 @@
 # See https://github.com/phusion/passenger-docker/blob/master/Changelog.md for
 # a list of version numbers.
 
-FROM singlecellportal/phusion_passenger-ruby34:3.1.3
+FROM singlecellportal/phusion_passenger-ruby34:3.1.6
 #FROM singlecellportal/phusion_passenger-full:1.0.8
 
 # Or, instead of the 'full' variant, use one of these:
@@ -63,7 +63,7 @@ RUN apt-get update && apt-get install -y -qq --no-install-recommends libnginx-mo
 RUN apt-get clean && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
 # install node 20 since we're not using the 'customizable' version
-RUN curl -sSL https://deb.nodesource.com/setup_20.x | bash -
+RUN curl -sSL https://deb.nodesource.com/setup_24.x | bash -
 RUN apt-get update && apt-get install -y nodejs
 
 # add yarn
