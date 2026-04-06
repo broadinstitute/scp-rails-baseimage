@@ -63,7 +63,7 @@ RUN apt-get update && apt-get install -y -qq --no-install-recommends libnginx-mo
 RUN apt-get clean && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
 # install node 20 since we're not using the 'customizable' version
-RUN curl -sSL https://deb.nodesource.com/setup_20.x | bash -
+RUN curl -sSL https://deb.nodesource.com/setup_24.x | bash -
 RUN apt-get update && apt-get install -y nodejs
 
 # add yarn
