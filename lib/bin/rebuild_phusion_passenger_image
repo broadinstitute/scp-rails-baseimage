@@ -23,9 +23,11 @@ cd "$PHUSION_PASSENGER_IMAGE_SOURCE_DIR" || exit 1
 
 export PATH="$BASE_DIR/lib/docker_shim:$PATH" # use a docker shim to filter out arguments we don't like
 
-# fix node install script to use node 24
+# fix node install script to use specified node version
+NODE_VERSION=24
+echo "Setting node version to $NODE_VERSION"
 NODE_INSTALL="./image/nodejs.sh"
-sed -i "s/VERSION=.*/VERSION=24/" $NODE_INSTALL
+sed -i "s/VERSION=.*/VERSION=${NODE_VERSION}/" $NODE_INSTALL
 
 # remove registry prepend from Makefile
 MAKEFILE="Makefile"
