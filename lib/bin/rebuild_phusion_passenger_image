@@ -11,8 +11,9 @@ echo '########################################'
 . $BASE_DIR/lib/bash_include/github.bash
 . $BASE_DIR/lib/bash_include/bash_utils.bash
 
-ls -la /pd_build
-npm i promise-retry
+# fix node install script to use node 24
+NODE_INSTALL="./image/nodejs.sh"
+sed -i "s/VERSION=.*/VERSION=24/" $NODE_INSTALL
 PHUSION_PASSENGER_IMAGE_NAME="$(new_image_name_from_repo $PHUSION_PASSENGER_IMAGE_REPO)"
 IMAGE_FULLNAME="$DOCKER_NAMESPACE/$PHUSION_PASSENGER_IMAGE_NAME"
 # define Ruby target for use downstream in names/build targets
